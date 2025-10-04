@@ -1,12 +1,9 @@
 /* ==========================================================================
-   Charlotte Crime Dashboard - D3.js Visualization
-   Main JavaScript file for data loading, processing, and visualization
+   Crime Lens of Charlotte
+   D3.js Visualization
    ========================================================================== */
 
-// ===========================================================================
 // CONFIGURATION & CONSTANTS
-// ===========================================================================
-
 const CONFIG = {
     // API Endpoints
     apis: {
@@ -33,95 +30,43 @@ const CONFIG = {
 
     // Crime Type Categories - Based on NIBRS descriptions
     crimeCategories: {
-        violent: [
-            'Murder', 'Aggravated Assault', 'Simple Assault', 'Intimidation',
-            'Kidnapping', 'Robbery', 'Affray', 'Negligent Manslaughter',
-            'Justifiable Homicide'
-        ],
-        sex: [
-            'Forcible Rape', 'Forcible Sodomy', 'Sexual Assault With Object',
-            'Forcible Fondling', 'Statutory Rape', 'Incest', 'Indecent Exposure',
-            'Pornography/Obscene Material', 'Prostitution', 'Purchasing Prostitution',
-            'Assisting Prostitution', 'Human Trafficking, Commercial Sex Acts',
-            'Human Trafficking, Involuntary Servitude', 'Peeping Tom'
-        ],
-        property: [
-            'Burglary/B&E', 'Arson', 'Damage/Vandalism Of Property',
-            'Theft From Building', 'Theft From Motor Vehicle',
-            'Theft of Motor Vehicle Parts from Vehicle', 'Motor Vehicle Theft',
-            'Purse-Snatching', 'Pocket-Picking', 'Shoplifting',
-            'All Other Thefts', 'Theft From Coin-Operated Machine Or Device',
-            'Stolen Property Offenses'
-        ],
-        fraud: [
-            'Embezzlement', 'False Pretenses/Swindle', 'Credit Card/Teller Fraud',
-            'Identity Theft', 'Counterfeiting/Forgery', 'Wire Fraud',
-            'Hacking/Computer Invasion', 'Welfare Fraud',
-            'Worthless Check: Felony (over $2000)', 'Bribery', 'Extortion/Blackmail'
-        ],
-        drug: [
-            'Drug/Narcotic Violations', 'Drug Equipment Violations',
-            'Liquor Law Violations', 'Driving Under The Influence', 'Overdose'
-        ],
-        publicOrder: [
-            'Disorderly Conduct', 'Trespass Of Real Property',
-            'Curfew/Loitering/Vagrancy Violations', 'Gambling Equipment Violations',
-            'Assisting Gambling', 'Betting/Wagering', 'Family Offenses; Nonviolent'
-        ],
-        weapons: [
-            'Weapon Law Violations'
-        ],
-        other: [
-            'All Other Offenses', 'Other Unlisted Non-Criminal', 'Missing Person',
-            'Suicide', 'Sudden/Natural Death Investigation', 'Public Accident',
-            'Fire (Accidental/Non-Arson)', 'Gas Leak', 'Vehicle Recovery',
-            'Animal Cruelty', 'Dog Bite/Animal Control Incident'
-        ]
+        violent: ['Murder', 'Aggravated Assault', 'Simple Assault', 'Intimidation', 'Kidnapping', 'Robbery', 'Affray', 'Negligent Manslaughter', 'Justifiable Homicide'],
+        sex: ['Forcible Rape', 'Forcible Sodomy', 'Sexual Assault With Object', 'Forcible Fondling', 'Statutory Rape', 'Incest', 'Indecent Exposure', 'Pornography/Obscene Material', 'Prostitution', 'Purchasing Prostitution', 'Assisting Prostitution', 'Human Trafficking, Commercial Sex Acts', 'Human Trafficking, Involuntary Servitude', 'Peeping Tom'],
+        property: ['Burglary/B&E', 'Arson', 'Damage/Vandalism Of Property', 'Theft From Building', 'Theft From Motor Vehicle', 'Theft of Motor Vehicle Parts from Vehicle', 'Motor Vehicle Theft', 'Purse-Snatching', 'Pocket-Picking', 'Shoplifting', 'All Other Thefts', 'Theft From Coin-Operated Machine Or Device', 'Stolen Property Offenses'],
+        fraud: ['Embezzlement', 'False Pretenses/Swindle', 'Credit Card/Teller Fraud', 'Identity Theft', 'Counterfeiting/Forgery', 'Wire Fraud', 'Hacking/Computer Invasion', 'Welfare Fraud', 'Worthless Check: Felony (over $2000)', 'Bribery', 'Extortion/Blackmail'],
+        drug: ['Drug/Narcotic Violations', 'Drug Equipment Violations', 'Liquor Law Violations', 'Driving Under The Influence', 'Overdose'],
+        publicOrder: ['Disorderly Conduct', 'Trespass Of Real Property', 'Curfew/Loitering/Vagrancy Violations', 'Gambling Equipment Violations', 'Assisting Gambling', 'Betting/Wagering', 'Family Offenses; Nonviolent'],
+        weapons: ['Weapon Law Violations'],
+        other: ['All Other Offenses', 'Other Unlisted Non-Criminal', 'Missing Person', 'Suicide', 'Sudden/Natural Death Investigation', 'Public Accident', 'Fire (Accidental/Non-Arson)', 'Gas Leak', 'Vehicle Recovery', 'Animal Cruelty', 'Dog Bite/Animal Control Incident']
     },
 
     // Map settings
     map: {
-        width: 1000,
-        height: 600,
-        centerLat: 35.2271,
-        centerLon: -80.8431
+        width: 1000, height: 1000, centerLat: 35.2271, centerLon: -80.8431
     }
 };
 
-// ===========================================================================
+
 // GLOBAL STATE
-// ===========================================================================
+
 
 const STATE = {
     rawData: {
-        incidents: null,
-        zipCodes: null,
-        homicides: null,
-        violentCrime: null
-    },
-    processedData: {
-        incidents: [],
-        zipCodes: [],
-        filtered: []
-    },
-    filters: {
-        startDate: null,
-        endDate: null,
-        crimeTypes: ['all'],
-        zipCode: 'all'
-    },
-    currentView: 'heatmap', // heatmap, choropleth, or points
-    isLoading: false,
-    map: null, // Leaflet map instance
+        incidents: null, zipCodes: null, homicides: null, violentCrime: null
+    }, processedData: {
+        incidents: [], zipCodes: [], filtered: []
+    }, filters: {
+        startDate: null, endDate: null, crimeTypes: ['all'], zipCode: 'all'
+    }, currentView: 'heatmap', // heatmap, choropleth, or points
+    isLoading: false, map: null, // Leaflet map instance
     layers: {
-        zipBoundaries: null,
-        crimePoints: null
+        zipBoundaries: null, crimePoints: null
     }
 };
 
-// ===========================================================================
+
 // UTILITY FUNCTIONS
-// ===========================================================================
+
 
 const Utils = {
     // Show/hide loading overlay
@@ -139,9 +84,7 @@ const Utils = {
     formatDate(dateString) {
         const date = new Date(dateString);
         return date.toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
+            year: 'numeric', month: 'short', day: 'numeric'
         });
     },
 
@@ -209,9 +152,9 @@ const Utils = {
     }
 };
 
-// ===========================================================================
+
 // DATA LOADING & PROCESSING
-// ===========================================================================
+
 
 const DataManager = {
     // Load all datasets
@@ -256,9 +199,6 @@ const DataManager = {
             // Process the data
             this.processData();
 
-            // Update UI with last updated time
-            document.getElementById('lastUpdated').textContent = new Date().toLocaleDateString();
-
             Utils.setLoading(false);
             return true;
 
@@ -276,10 +216,7 @@ const DataManager = {
 
         // Charlotte area bounds (Mecklenburg County approximate)
         const CHARLOTTE_BOUNDS = {
-            minLon: -81.2,
-            maxLon: -80.5,
-            minLat: 34.9,
-            maxLat: 35.5
+            minLon: -81.2, maxLon: -80.5, minLat: 34.9, maxLat: 35.5
         };
 
         // Function to check if a coordinate is reasonable (not world-spanning)
@@ -327,17 +264,11 @@ const DataManager = {
                 }
 
                 // Try various field name patterns
-                const zipCode = props.ZIPCODE || props.ZIP || props.zip ||
-                              props.ZIPCODE5 || props.ZIP5 || props.zip5 ||
-                              props.GEOID || props.geoid || props.NAME || props.name;
+                const zipCode = props.ZIPCODE || props.ZIP || props.zip || props.ZIPCODE5 || props.ZIP5 || props.zip5 || props.GEOID || props.geoid || props.NAME || props.name;
 
                 return {
-                    type: 'Feature',
-                    geometry: feature.geometry,
-                    properties: {
-                        zipCode: zipCode,
-                        name: zipCode,
-                        ...props
+                    type: 'Feature', geometry: feature.geometry, properties: {
+                        zipCode: zipCode, name: zipCode, ...props
                     }
                 };
             })
@@ -356,32 +287,21 @@ const DataManager = {
             const coords = feature.geometry?.coordinates || [];
 
             // Try to extract date from various possible field names
-            const dateValue = props.date || props.DATE || props.date_reported ||
-                            props.DATE_REPORTED || props.datetime || props.DATETIME;
+            const dateValue = props.date || props.DATE || props.date_reported || props.DATE_REPORTED || props.datetime || props.DATETIME;
 
             return {
                 id: props.OBJECTID || props.objectid || Math.random(),
                 date: Utils.parseDate(dateValue),
-                type: props.highest_nibrs_description || props.HIGHEST_NIBRS_DESCRIPTION ||
-                      props.offense_description || props.OFFENSE_DESCRIPTION || 'Unknown',
-                category: Utils.categorizeCrime(
-                    props.highest_nibrs_description || props.HIGHEST_NIBRS_DESCRIPTION ||
-                    props.offense_description || props.OFFENSE_DESCRIPTION || ''
-                ),
+                type: props.highest_nibrs_description || props.HIGHEST_NIBRS_DESCRIPTION || props.offense_description || props.OFFENSE_DESCRIPTION || 'Unknown',
+                category: Utils.categorizeCrime(props.highest_nibrs_description || props.HIGHEST_NIBRS_DESCRIPTION || props.offense_description || props.OFFENSE_DESCRIPTION || ''),
                 latitude: coords[1],
                 longitude: coords[0],
                 address: props.address || props.ADDRESS || '',
                 zipCode: props.zip || props.ZIP || props.zipcode || null, // Keep original for reference
                 nibrsCode: props.highest_nibrs_code || props.HIGHEST_NIBRS_CODE || null
             };
-        }).filter(incident =>
-            // Filter out incidents without coordinates or with invalid dates
-            incident.latitude &&
-            incident.longitude &&
-            !isNaN(incident.latitude) &&
-            !isNaN(incident.longitude) &&
-            incident.date instanceof Date && !isNaN(incident.date)
-        );
+        }).filter(incident => // Filter out incidents without coordinates or with invalid dates
+            incident.latitude && incident.longitude && !isNaN(incident.latitude) && !isNaN(incident.longitude) && incident.date instanceof Date && !isNaN(incident.date));
 
         // Spatially join incidents to ZIP codes based on coordinates
         console.log('Performing spatial join to match incidents to ZIP codes...');
@@ -482,8 +402,7 @@ const DataManager = {
             const xi = ring[i][0], yi = ring[i][1];
             const xj = ring[j][0], yj = ring[j][1];
 
-            const intersect = ((yi > y) !== (yj > y))
-                && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+            const intersect = ((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
 
             if (intersect) inside = !inside;
         }
@@ -505,9 +424,7 @@ const DataManager = {
 
         // Crime type filter
         if (!STATE.filters.crimeTypes.includes('all')) {
-            filtered = filtered.filter(d =>
-                STATE.filters.crimeTypes.includes(d.category)
-            );
+            filtered = filtered.filter(d => STATE.filters.crimeTypes.includes(d.category));
         }
 
         // ZIP code filter
@@ -523,9 +440,9 @@ const DataManager = {
     }
 };
 
-// ===========================================================================
+
 // VISUALIZATIONS
-// ===========================================================================
+
 
 const Visualizations = {
     // Initialize Leaflet map
@@ -537,9 +454,7 @@ const Visualizations = {
 
         // Create map centered on Charlotte
         STATE.map = L.map('mapVisualization', {
-            center: [35.2271, -80.8431],
-            zoom: 11,
-            zoomControl: true
+            center: [35.2271, -80.8431], zoom: 11, zoomControl: true
         });
 
         // Add OpenStreetMap tiles
@@ -550,11 +465,11 @@ const Visualizations = {
             zIndex: 1
         });
 
-        tileLayer.on('tileerror', function(error) {
+        tileLayer.on('tileerror', function (error) {
             console.error('Tile loading error:', error);
         });
 
-        tileLayer.on('tileload', function() {
+        tileLayer.on('tileload', function () {
             console.log('Tiles loading successfully');
         });
 
@@ -581,7 +496,6 @@ const Visualizations = {
         this.updateMap();
         this.updateTrendChart();
         this.updateDistributionChart();
-        this.updateStatistics();
     },
 
     // Create/update map visualization
@@ -592,7 +506,7 @@ const Visualizations = {
         console.log('updateMap called with', zipCodes.length, 'ZIP codes and', data.length, 'crimes');
 
         // Clear ALL existing layers from the map
-        STATE.map.eachLayer(function(layer) {
+        STATE.map.eachLayer(function (layer) {
             // Don't remove the tile layer
             if (layer instanceof L.TileLayer) {
                 return;
@@ -643,8 +557,7 @@ const Visualizations = {
                     };
 
                     const layer = L.geoJSON(zipFeature, {
-                        style: style,
-                        onEachFeature: (feature, layer) => {
+                        style: style, onEachFeature: (feature, layer) => {
                             layer.bindPopup(`
                                 <strong>ZIP Code: ${zipCode}</strong><br/>
                                 Incidents: ${crimeCount}
@@ -663,24 +576,17 @@ const Visualizations = {
                     const crimeCount = data.filter(crime => crime.zipCode === zipCode).length;
 
                     const style = {
-                        fillColor: '#e0e0e0',
-                        weight: 2,
-                        opacity: 1,
-                        color: '#24B24A',
-                        fillOpacity: 0.3
+                        fillColor: '#e0e0e0', weight: 2, opacity: 1, color: '#24B24A', fillOpacity: 0.3
                     };
 
                     const layer = L.geoJSON(zipFeature, {
-                        style: style,
-                        onEachFeature: (feature, layer) => {
+                        style: style, onEachFeature: (feature, layer) => {
                             layer.on({
                                 mouseover: (e) => {
                                     e.target.setStyle({
-                                        fillColor: '#7BF44',
-                                        fillOpacity: 0.7
+                                        fillColor: '#7BF44', fillOpacity: 0.7
                                     });
-                                },
-                                mouseout: (e) => {
+                                }, mouseout: (e) => {
                                     e.target.setStyle(style);
                                 }
                             });
@@ -755,16 +661,23 @@ const Visualizations = {
         const legend = d3.select('#mapLegend');
         legend.selectAll('*').remove();
 
-        const categories = [
-            { name: 'Violent Crimes', color: CONFIG.colors.red, category: 'violent' },
-            { name: 'Sex Crimes', color: CONFIG.colors.purple, category: 'sex' },
-            { name: 'Property Crimes', color: CONFIG.colors.orange, category: 'property' },
-            { name: 'Fraud / Financial', color: CONFIG.colors.yellow, category: 'fraud' },
-            { name: 'Drug & Alcohol', color: CONFIG.colors.medBlue, category: 'drug' },
-            { name: 'Public Order', color: CONFIG.colors.legacyGreen, category: 'publicOrder' },
-            { name: 'Weapons', color: CONFIG.colors.darkRed, category: 'weapons' },
-            { name: 'Other', color: CONFIG.colors.blue, category: 'other' }
-        ];
+        const categories = [{
+            name: 'Violent Crimes',
+            color: CONFIG.colors.red,
+            category: 'violent'
+        }, {name: 'Sex Crimes', color: CONFIG.colors.purple, category: 'sex'}, {
+            name: 'Property Crimes',
+            color: CONFIG.colors.orange,
+            category: 'property'
+        }, {name: 'Fraud / Financial', color: CONFIG.colors.yellow, category: 'fraud'}, {
+            name: 'Drug & Alcohol',
+            color: CONFIG.colors.medBlue,
+            category: 'drug'
+        }, {name: 'Public Order', color: CONFIG.colors.legacyGreen, category: 'publicOrder'}, {
+            name: 'Weapons',
+            color: CONFIG.colors.darkRed,
+            category: 'weapons'
+        }, {name: 'Other', color: CONFIG.colors.blue, category: 'other'}];
 
         categories.forEach(cat => {
             const item = legend.append('div').attr('class', 'legend-item');
@@ -785,21 +698,22 @@ const Visualizations = {
         d3.select('#trendVisualization').selectAll('*').remove();
 
         const svg = d3.select('#trendVisualization');
-        const margin = { top: 20, right: 30, bottom: 50, left: 60 };
-        const width = 800 - margin.left - margin.right;
+
+        // Get actual container width dynamically
+        const container = document.getElementById('trendVisualization');
+        const containerWidth = container.clientWidth;
+
+        const margin = {top: 30, right: 30, bottom: 60, left: 70};
+        const width = containerWidth - margin.left - margin.right;
         const height = 400 - margin.top - margin.bottom;
 
         const g = svg.append('g')
             .attr('transform', `translate(${margin.left},${margin.top})`);
 
         // Aggregate data by month
-        const monthlyData = d3.rollup(
-            data,
-            v => v.length,
-            d => d3.timeMonth(d.date)
-        );
+        const monthlyData = d3.rollup(data, v => v.length, d => d3.timeMonth(d.date));
 
-        const aggregated = Array.from(monthlyData, ([date, count]) => ({ date, count }))
+        const aggregated = Array.from(monthlyData, ([date, count]) => ({date, count}))
             .sort((a, b) => a.date - b.date);
 
         if (aggregated.length === 0) {
@@ -807,6 +721,8 @@ const Visualizations = {
                 .attr('x', width / 2)
                 .attr('y', height / 2)
                 .attr('text-anchor', 'middle')
+                .style('font-size', '16px')
+                .style('fill', '#6c757d')
                 .text('No data available for selected filters');
             return;
         }
@@ -821,20 +737,37 @@ const Visualizations = {
             .nice()
             .range([height, 0]);
 
+        // Add grid
+        g.append('g')
+            .attr('class', 'grid')
+            .attr('opacity', 0.1)
+            .call(d3.axisLeft(y).tickSize(-width).tickFormat(''));
+
         // Add axes
         g.append('g')
             .attr('class', 'axis')
             .attr('transform', `translate(0,${height})`)
-            .call(d3.axisBottom(x).ticks(6));
+            .call(d3.axisBottom(x).ticks(8))
+            .selectAll('text')
+            .style('font-size', '12px');
 
         g.append('g')
             .attr('class', 'axis')
-            .call(d3.axisLeft(y));
+            .call(d3.axisLeft(y))
+            .selectAll('text')
+            .style('font-size', '12px');
 
-        // Add grid
-        g.append('g')
-            .attr('class', 'grid')
-            .call(d3.axisLeft(y).tickSize(-width).tickFormat(''));
+        // Add area first (behind line)
+        const area = d3.area()
+            .x(d => x(d.date))
+            .y0(height)
+            .y1(d => y(d.count))
+            .curve(d3.curveMonotoneX);
+
+        g.append('path')
+            .datum(aggregated)
+            .attr('class', 'line-area')
+            .attr('d', area);
 
         // Add line
         const line = d3.line()
@@ -847,30 +780,22 @@ const Visualizations = {
             .attr('class', 'line')
             .attr('d', line);
 
-        // Add area
-        const area = d3.area()
-            .x(d => x(d.date))
-            .y0(height)
-            .y1(d => y(d.count))
-            .curve(d3.curveMonotoneX);
-
-        g.append('path')
-            .datum(aggregated)
-            .attr('class', 'line-area')
-            .attr('d', area);
-
         // Add labels
         g.append('text')
             .attr('x', width / 2)
-            .attr('y', height + 40)
+            .attr('y', height + 50)
             .attr('text-anchor', 'middle')
+            .style('font-size', '14px')
+            .style('font-weight', '600')
             .text('Month');
 
         g.append('text')
             .attr('transform', 'rotate(-90)')
             .attr('x', -height / 2)
-            .attr('y', -45)
+            .attr('y', -50)
             .attr('text-anchor', 'middle')
+            .style('font-size', '14px')
+            .style('font-weight', '600')
             .text('Number of Incidents');
     },
 
@@ -882,23 +807,23 @@ const Visualizations = {
         d3.select('#distributionVisualization').selectAll('*').remove();
 
         const svg = d3.select('#distributionVisualization');
-        const margin = { top: 20, right: 20, bottom: 80, left: 60 };
-        const width = 400 - margin.left - margin.right;
-        const height = 400 - margin.top - margin.bottom;
+
+        // Get actual container width dynamically
+        const container = document.getElementById('distributionVisualization');
+        const containerWidth = container.clientWidth;
+
+        const margin = {top: 30, right: 30, bottom: 120, left: 70}; // Increased bottom for rotated labels
+        const width = containerWidth - margin.left - margin.right;
+        const height = 500 - margin.top - margin.bottom;
 
         const g = svg.append('g')
             .attr('transform', `translate(${margin.left},${margin.top})`);
 
         // Aggregate by category
-        const categoryData = d3.rollup(
-            data,
-            v => v.length,
-            d => d.category
-        );
+        const categoryData = d3.rollup(data, v => v.length, d => d.category);
 
         const aggregated = Array.from(categoryData, ([category, count]) => ({
-            category,
-            count
+            category, count
         })).sort((a, b) => b.count - a.count);
 
         if (aggregated.length === 0) {
@@ -906,6 +831,8 @@ const Visualizations = {
                 .attr('x', width / 2)
                 .attr('y', height / 2)
                 .attr('text-anchor', 'middle')
+                .style('font-size', '16px')
+                .style('fill', '#6c757d')
                 .text('No data available');
             return;
         }
@@ -914,22 +841,36 @@ const Visualizations = {
         const x = d3.scaleBand()
             .domain(aggregated.map(d => d.category))
             .range([0, width])
-            .padding(0.2);
+            .padding(0.3);
 
         const y = d3.scaleLinear()
             .domain([0, d3.max(aggregated, d => d.count)])
             .nice()
             .range([height, 0]);
 
+        // Add grid
+        g.append('g')
+            .attr('class', 'grid')
+            .attr('opacity', 0.1)
+            .call(d3.axisLeft(y).tickSize(-width).tickFormat(''));
+
         // Add axes
         g.append('g')
             .attr('class', 'axis')
             .attr('transform', `translate(0,${height})`)
-            .call(d3.axisBottom(x));
+            .call(d3.axisBottom(x))
+            .selectAll('text')
+            .attr('transform', 'rotate(-45)')
+            .style('text-anchor', 'end')
+            .style('font-size', '12px')
+            .attr('dx', '-0.5em')
+            .attr('dy', '0.5em');
 
         g.append('g')
             .attr('class', 'axis')
-            .call(d3.axisLeft(y));
+            .call(d3.axisLeft(y))
+            .selectAll('text')
+            .style('font-size', '12px');
 
         // Add bars
         g.selectAll('.bar')
@@ -941,51 +882,42 @@ const Visualizations = {
             .attr('y', d => y(d.count))
             .attr('width', x.bandwidth())
             .attr('height', d => height - y(d.count))
-            .on('mouseover', function(event, d) {
+            .on('mouseover', function (event, d) {
+                d3.select(this).style('opacity', 0.8);
                 Utils.showTooltip(event, `
-                    <strong>${d.category}</strong><br/>
-                    Count: ${Utils.formatNumber(d.count)}<br/>
-                    Percentage: ${((d.count / data.length) * 100).toFixed(1)}%
-                `);
+                <strong>${d.category.toUpperCase()}</strong><br/>
+                Count: ${Utils.formatNumber(d.count)}<br/>
+                Percentage: ${((d.count / data.length) * 100).toFixed(1)}%
+            `);
             })
-            .on('mouseout', Utils.hideTooltip);
+            .on('mouseout', function () {
+                d3.select(this).style('opacity', 1);
+                Utils.hideTooltip();
+            });
 
         // Add labels
         g.append('text')
             .attr('x', width / 2)
-            .attr('y', height + 50)
+            .attr('y', height + 100)
             .attr('text-anchor', 'middle')
+            .style('font-size', '14px')
+            .style('font-weight', '600')
             .text('Crime Category');
 
         g.append('text')
             .attr('transform', 'rotate(-90)')
             .attr('x', -height / 2)
-            .attr('y', -45)
+            .attr('y', -50)
             .attr('text-anchor', 'middle')
+            .style('font-size', '14px')
+            .style('font-weight', '600')
             .text('Number of Incidents');
     },
-
-    // Update statistics panel
-    updateStatistics() {
-        const data = STATE.processedData.filtered;
-
-        const violent = data.filter(d => d.category === 'violent').length;
-        const property = data.filter(d => d.category === 'property').length;
-
-        // Calculate average per day
-        const dateRange = (STATE.filters.endDate - STATE.filters.startDate) / (1000 * 60 * 60 * 24);
-        const avgPerDay = dateRange > 0 ? (data.length / dateRange).toFixed(1) : 0;
-
-        document.getElementById('totalCrimes').textContent = Utils.formatNumber(data.length);
-        document.getElementById('violentCrimes').textContent = Utils.formatNumber(violent);
-        document.getElementById('propertyCrimes').textContent = Utils.formatNumber(property);
-        document.getElementById('crimeRate').textContent = avgPerDay;
-    }
 };
 
-// ===========================================================================
+
 // EVENT HANDLERS
-// ===========================================================================
+
 
 const EventHandlers = {
     // Initialize all event listeners
@@ -1034,9 +966,7 @@ const EventHandlers = {
         // Map view toggle
         document.querySelectorAll('.view-option').forEach(option => {
             option.addEventListener('click', (e) => {
-                document.querySelectorAll('.view-option').forEach(opt =>
-                    opt.classList.remove('active')
-                );
+                document.querySelectorAll('.view-option').forEach(opt => opt.classList.remove('active'));
                 e.target.classList.add('active');
                 STATE.currentView = e.target.dataset.view;
                 Visualizations.updateMap();
@@ -1045,9 +975,9 @@ const EventHandlers = {
     }
 };
 
-// ===========================================================================
+
 // INITIALIZATION
-// ===========================================================================
+
 
 async function init() {
     console.log('Initializing Charlotte Crime Dashboard...');

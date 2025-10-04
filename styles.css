@@ -1,7 +1,5 @@
-/* ==========================================================================
-   Charlotte Crime Dashboard - Stylesheet
-   Based on City of Charlotte Brand Guidelines
-   ========================================================================== */
+/* Crime Lens of Charlotte
+   Stylesheet CSS File */
 
 /* CSS Variables - Charlotte Brand Colors */
 :root {
@@ -74,9 +72,7 @@
     font-style: normal;
 }
 
-/* ==========================================================================
-   Base Styles & Reset
-   ========================================================================== */
+/* Base Styles & Reset */
 
 * {
     margin: 0;
@@ -106,9 +102,7 @@ body {
     padding: 0 var(--spacing-lg);
 }
 
-/* ==========================================================================
-   Header
-   ========================================================================== */
+/* Header */
 
 .dashboard-header {
     background: linear-gradient(135deg, var(--dark-charlotte-green) 0%, var(--legacy-green) 100%);
@@ -131,39 +125,44 @@ body {
 }
 
 .dashboard-header .container {
-  position: relative;
-  display: flex;
-  flex-direction: column;     /* stack title/subtitle */
-  align-items: center;        /* center horizontally */
-  justify-content: center;    /* center vertically within header */
-  padding-inline: var(--spacing-xl);
+    position: relative;
+    display: flex;
+    flex-direction: column; /* stack title/subtitle */
+    align-items: center; /* center horizontally */
+    justify-content: center; /* center vertically within header */
+    padding-inline: var(--spacing-xl);
 }
 
 /* brand pinned to the left edge, vertically centered */
 .dashboard-header .brand {
-  position: absolute;
-  left: var(--spacing-xl);
-  top: 50%;
-  transform: translateY(-50%);
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
-  color: inherit;             /* matches your paper-white */
+    position: absolute;
+    left: var(--spacing-xl);
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
 }
 
 .dashboard-header .brand-logo {
-  height: 100px;
-  width: auto;
-  display: block;
+    height: 100px;
+    width: auto;
+    display: block;
 }
 
 @media (max-width: 600px) {
-  .dashboard-header .brand-logo { height: 32px; }
-  .dashboard-header .brand { left: var(--spacing-lg); }
+    .dashboard-header .brand-logo {
+        height: 32px;
+    }
+
+    .dashboard-header .brand {
+        left: var(--spacing-lg);
+    }
 }
-/* ==========================================================================
-   Main Content
-   ========================================================================== */
+
+/* Main Content */
+
 
 .dashboard-main {
     flex: 1;
@@ -177,9 +176,7 @@ body {
     margin-bottom: var(--spacing-lg);
 }
 
-/* ==========================================================================
-   Control Panel
-   ========================================================================== */
+/* Control Panel */
 
 .control-panel {
     background: var(--paper-white);
@@ -187,7 +184,6 @@ body {
     padding: var(--spacing-lg);
     margin-bottom: var(--spacing-xl);
     box-shadow: var(--box-shadow);
-    border-left: 4px solid var(--dark-charlotte-green);
 }
 
 .control-grid {
@@ -270,9 +266,8 @@ body {
 .btn-reset {
     width: 100%;
     padding: var(--spacing-md);
-    background-color: var(--dark-red);
+    background-color: var(--dark-charlotte-green);
     color: var(--paper-white);
-    border: none;
     border-radius: var(--border-radius);
     font-size: var(--font-size-base);
     font-weight: 700;
@@ -292,9 +287,7 @@ body {
     transform: translateY(0);
 }
 
-/* ==========================================================================
-   Visualization Grid
-   ========================================================================== */
+/* Visualization Grid */
 
 .visualization-grid {
     display: grid;
@@ -309,7 +302,6 @@ body {
     box-shadow: var(--box-shadow);
     overflow: hidden;
     transition: box-shadow var(--transition-base);
-    border-top: 4px solid var(--dark-charlotte-green);
 }
 
 .viz-panel:hover {
@@ -322,11 +314,11 @@ body {
 }
 
 #trendPanel {
-    grid-column: span 8;
+    grid-column: span 12;
 }
 
 #distributionPanel {
-    grid-column: span 4;
+    grid-column: span 12;
 }
 
 #statsPanel {
@@ -421,12 +413,16 @@ svg {
 }
 
 #distributionVisualization {
-    min-height: 400px;
+    min-height: 500px;
 }
 
-/* ==========================================================================
-   View Toggle Buttons
-   ========================================================================== */
+.panel-content {
+    padding: 0;
+    position: relative;
+    overflow: visible; /* Changed to visible to prevent label cutoff */
+}
+
+/* View Toggle Buttons */
 
 .btn-view-toggle {
     display: flex;
@@ -461,9 +457,7 @@ svg {
     color: var(--paper-white);
 }
 
-/* ==========================================================================
-   Map Legend
-   ========================================================================== */
+/* Map Legend */
 
 .map-legend {
     position: absolute;
@@ -495,87 +489,6 @@ svg {
     font-weight: 400;
 }
 
-/* ==========================================================================
-   Statistics Panel
-   ========================================================================== */
-
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--spacing-lg);
-    padding: var(--spacing-md) 0;
-}
-
-.stat-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: var(--spacing-lg);
-    background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-medium) 100%);
-    border-radius: var(--border-radius);
-    border-left: 4px solid var(--dark-charlotte-green);
-    transition: transform var(--transition-base);
-}
-
-.stat-card:hover {
-    transform: translateY(-4px);
-}
-
-.stat-value {
-    font-size: var(--font-size-xxl);
-    font-weight: 700;
-    /*color: var(--dark-charlotte-green);*/
-    margin-bottom: var(--spacing-sm);
-}
-
-.stat-label {
-    font-size: var(--font-size-sm);
-    font-weight: 700;
-    color: var(--text-black);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-/* ==========================================================================
-   Info Panel
-   ========================================================================== */
-
-.info-panel {
-    background: var(--paper-white);
-    border-left: 4px solid var(--dark-charlotte-green);
-    border-radius: var(--border-radius);
-    padding: var(--spacing-lg);
-    margin-bottom: var(--spacing-xl);
-    box-shadow: var(--box-shadow);
-}
-
-.info-content h3 {
-    font-size: var(--font-size-lg);
-    font-weight: 700;
-    margin-bottom: var(--spacing-md);
-    color: var(--text-black);
-}
-
-.info-content p {
-    color: var(--text-secondary);
-    margin-bottom: var(--spacing-md);
-    line-height: 1.7;
-}
-
-.info-content a {
-    color: var(--light-charlotte-green);
-    text-decoration: none;
-    font-weight: 700;
-    transition: color var(--transition-fast);
-}
-
-
-.info-content a:hover {
-    color: var(--dark-charlotte-green);
-    text-decoration: underline;
-}
-
 /* Layout: two-column grid for About This Data */
 .info-panel .info-content {
     max-width: 1200px;
@@ -585,7 +498,7 @@ svg {
 
 .info-panel .data-grid {
     display: grid;
-    grid-template-columns: 1fr 360px; /* left: copy | right: dataset links */
+    grid-template-columns: 1fr 360px;
     gap: var(--spacing-lg) var(--spacing-xl);
     align-items: start;
 }
@@ -638,18 +551,15 @@ svg {
 }
 
 .data-timestamp {
-  font-size: var(--font-size-lg);
-  padding-top: var(--spacing-md);
-  border-top: 1px solid var(--border-color);
-  grid-column: 1 / -1;           /* span full width below both columns */
-  margin-top: var(--spacing-sm);
-  color: var(--text-secondary);
-  text-align: right;
+    font-size: var(--font-size-lg);
+    padding-top: var(--spacing-md);
+    grid-column: 1 / -1; /* span full width below both columns */
+    margin-top: var(--spacing-sm);
+    color: var(--text-secondary);
+    text-align: right;
 }
 
-/* ==========================================================================
-   Footer
-   ========================================================================== */
+/* Footer */
 
 .dashboard-footer {
     background-color: var(--navy);
@@ -670,9 +580,7 @@ svg {
     opacity: 0.7;
 }
 
-/* ==========================================================================
-   Tooltip
-   ========================================================================== */
+/* Tooltip */
 
 .tooltip {
     position: absolute;
@@ -693,9 +601,7 @@ svg {
     opacity: 1;
 }
 
-/* ==========================================================================
-   Loading Overlay
-   ========================================================================== */
+/* Loading Overlay */
 
 .loading-overlay {
     position: fixed;
@@ -721,13 +627,14 @@ svg {
     width: 60px;
     height: 60px;
     border: 4px solid var(--border-color);
-    border-top-color: var(--dark-charlotte-green);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .loading-text {
@@ -737,9 +644,7 @@ svg {
     color: var(--text-black);
 }
 
-/* ==========================================================================
-   D3 Visualization Styles
-   ========================================================================== */
+/* D3 Visualization Styles */
 
 /* Map Styles */
 .zip-boundary {
@@ -757,7 +662,7 @@ svg {
 
 .crime-point:hover {
     opacity: 1;
-    r: 6;
+    r: 6px;
 }
 
 .crime-point.violent {
@@ -834,9 +739,7 @@ svg {
     opacity: 0.2;
 }
 
-/* ==========================================================================
-   Responsive Design
-   ========================================================================== */
+/* Responsive Design */
 
 @media (max-width: 1024px) {
     #trendPanel,
@@ -880,7 +783,6 @@ svg {
     }
 
     .view-option {
-        border-right: none;
         border-bottom: 1px solid var(--border-color);
     }
 

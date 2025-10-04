@@ -2,29 +2,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Interactive crime visualization dashboard for Charlotte, NC">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="Interactive crime visualization dashboard for Charlotte, NC" name="description">
     <title>Crime Lens of CLT</title>
 
     <!-- D3.js Library -->
     <script src="https://d3js.org/d3.v7.min.js"></script>
 
     <!-- Leaflet for map tiles -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <!-- External Stylesheet -->
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="favicon/favicon.ico" sizes="any">
+    <link href="styles.css" rel="stylesheet">
+    <link href="favicon/favicon.ico" rel="icon" sizes="any">
 </head>
 <body>
 <!-- Header Section -->
 <header class="dashboard-header">
     <div class="container">
         <a class="brand" href="/">
-            <img src="/favicon/crime-lens-charlotte.svg"
-                 alt="Crime Lens of Charlotte"
-                 width="150" height="150" decoding="async" fetchpriority="high"/>
+            <img alt="Crime Lens of Charlotte"
+                 decoding="async"
+                 fetchpriority="high" height="150" src="/favicon/crime-lens-charlotte.svg" width="150"/>
         </a>
         <h1 class="dashboard-title" style="text-align: center;">Crime Lens of Charlotte</h1>
         <p class="dashboard-subtitle" style="text-align: center;">Exploring Crime in Charlotte</p>
@@ -44,9 +44,9 @@
                 <div class="control-group">
                     <label for="dateRange">Date Range</label>
                     <div class="date-inputs">
-                        <input type="date" id="startDate" name="startDate" aria-label="Start date">
+                        <input aria-label="Start date" id="startDate" name="startDate" type="date">
                         <span class="date-separator">to</span>
-                        <input type="date" id="endDate" name="endDate" aria-label="End date">
+                        <input aria-label="End date" id="endDate" name="endDate" type="date">
                     </div>
                 </div>
 
@@ -54,8 +54,8 @@
                 <div class="control-group">
                     <label for="crimeType">Crime Type</label>
                     <span class="helper-text">Select one or Ctrl+Click for multiple</span>
-                    <select id="crimeType" name="crimeType" multiple size="8" aria-label="Select crime types">
-                        <option value="all" selected>All Crime Types</option>
+                    <select aria-label="Select crime types" id="crimeType" multiple name="crimeType" size="8">
+                        <option selected value="all">All Crime Types</option>
                         <option value="violent">Violent Crimes</option>
                         <option value="sex">Sex Crimes</option>
                         <option value="property">Property Crimes</option>
@@ -70,15 +70,15 @@
                 <!-- ZIP Code Filter -->
                 <div class="control-group">
                     <label for="zipCode">ZIP Code</label>
-                    <select id="zipCode" name="zipCode" aria-label="Select ZIP code">
-                        <option value="all" selected>All ZIP Codes</option>
+                    <select aria-label="Select ZIP code" id="zipCode" name="zipCode">
+                        <option selected value="all">All ZIP Codes</option>
                         <!-- ZIP codes will be populated dynamically -->
                     </select>
                 </div>
 
                 <!-- Reset Button -->
                 <div class="control-group">
-                    <button id="resetFilters" class="btn-reset" aria-label="Reset all filters">
+                    <button aria-label="Reset all filters" class="btn-reset" id="resetFilters">
                         Reset Filters
                     </button>
                 </div>
@@ -88,12 +88,12 @@
         <!-- Visualization Grid -->
         <div class="visualization-grid">
 
-            <!-- Map Visualization -->
+            <!-- Crime Map -->
             <section class="viz-panel viz-panel-large" id="mapPanel">
                 <div class="panel-header">
                     <h2 class="panel-title">Crime Map</h2>
                     <div class="panel-controls">
-                        <button class="btn-view-toggle" id="mapViewToggle" aria-label="Toggle map view">
+                        <button aria-label="Toggle map view" class="btn-view-toggle" id="mapViewToggle">
                             <span class="view-option active" data-view="heatmap">All Incidents</span>
                             <span class="view-option" data-view="choropleth">Crime Density</span>
                             <span class="view-option" data-view="points">Individual Points</span>
@@ -106,13 +106,13 @@
                 </div>
             </section>
 
-            <!-- Temporal Trend Visualization -->
+            <!-- Crime Trends Over Time -->
             <section class="viz-panel" id="trendPanel">
                 <div class="panel-header">
                     <h2 class="panel-title">Crime Trends Over Time</h2>
                 </div>
                 <div class="panel-content">
-                    <svg id="trendVisualization" role="img" aria-label="Crime trend line chart"></svg>
+                    <svg aria-label="Crime trend line chart" id="trendVisualization" role="img"></svg>
                 </div>
             </section>
 
@@ -122,78 +122,10 @@
                     <h2 class="panel-title">Crime Type Distribution</h2>
                 </div>
                 <div class="panel-content">
-                    <svg id="distributionVisualization" role="img" aria-label="Crime type bar chart"></svg>
+                    <svg aria-label="Crime type bar chart" id="distributionVisualization" role="img"></svg>
                 </div>
             </section>
-
-            <!-- Statistics Summary -->
-            <section class="viz-panel" id="statsPanel">
-                <div class="panel-header">
-                    <h2 class="panel-title">Key Statistics</h2>
-                </div>
-                <div class="panel-content stats-grid">
-                    <div class="stat-card">
-                        <span class="stat-value" id="totalCrimes">-</span>
-                        <span class="stat-label">Total Incidents</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-value" id="violentCrimes">-</span>
-                        <span class="stat-label">Violent Crimes</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-value" id="propertyCrimes">-</span>
-                        <span class="stat-label">Property Crimes</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-value" id="crimeRate">-</span>
-                        <span class="stat-label">Avg. per Day</span>
-                    </div>
-                </div>
-            </section>
-
         </div>
-
-        <!-- Data Info Panel -->
-        <section class="info-panel" id="dataInfo">
-            <div class="info-content data-grid">
-                <div class="data-copy">
-                    <h3>About This Data</h3>
-                    <p>
-                        Crime data is sourced directly from the Charlotte-Mecklenburg Police Department (CMPD)
-                        via the <a href="https://data.charlottenc.gov" target="_blank" rel="noopener noreferrer">
-                        Charlotte Open Data Portal</a>. The dashboard reflects reported incidents classified using
-                        FBI NIBRS standards.
-                    </p>
-                </div>
-
-                <nav class="dataset-list" aria-label="Datasets">
-                    <ul class="link-list">
-                        <li>
-                            <a href="https://data.charlottenc.gov/datasets/charlotte::cmpd-incidents-1/about"
-                               target="_blank" rel="noopener noreferrer">CMPD Incidents</a>
-                        </li>
-                        <li>
-                            <a href="https://data.charlottenc.gov/datasets/charlotte::zip-codes/about"
-                               target="_blank" rel="noopener noreferrer">ZIP Codes</a>
-                        </li>
-                        <li>
-                            <a href="https://data.charlottenc.gov/datasets/charlotte::cmpd-homicide/about"
-                               target="_blank" rel="noopener noreferrer">Homicides</a>
-                        </li>
-                        <li>
-                            <a href="https://data.charlottenc.gov/datasets/charlotte::cmpd-violent-crime/about"
-                               target="_blank" rel="noopener noreferrer">Violent Crimes</a>
-                        </li>
-                    </ul>
-                </nav>
-
-                <p class="data-timestamp">
-                    <strong>Last Updated:</strong>
-                    <time id="lastUpdated">Loading...</time>
-                </p>
-            </div>
-        </section>
-
     </div>
 </main>
 
@@ -207,10 +139,10 @@
 </footer>
 
 <!-- Tooltip (for interactive elements) -->
-<div id="tooltip" class="tooltip" role="tooltip" aria-hidden="true"></div>
+<div aria-hidden="true" class="tooltip" id="tooltip" role="tooltip"></div>
 
 <!-- Loading Overlay -->
-<div id="loadingOverlay" class="loading-overlay">
+<div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
     <p class="loading-text">Loading crime data...</p>
 </div>
