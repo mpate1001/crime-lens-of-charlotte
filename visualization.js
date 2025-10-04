@@ -16,7 +16,7 @@ const CONFIG = {
     // Charlotte Brand Colors
     colors: {
         darkGreen: '#24B24A',
-        lightGreen: '#7BF44',
+        lightGreen: '#71BF44',
         yellow: '#FADD4A',
         orange: '#EA9B3E',
         blue: '#2F70B8',
@@ -42,32 +42,46 @@ const CONFIG = {
 
     // Map settings
     map: {
-        width: 1000, height: 1000, centerLat: 35.2271, centerLon: -80.8431
+        width: 1000, height: 600, centerLat: 35.2271, centerLon: -80.8431
     }
 };
-
 
 // GLOBAL STATE
-
-
 const STATE = {
     rawData: {
-        incidents: null, zipCodes: null, homicides: null, violentCrime: null
-    }, processedData: {
-        incidents: [], zipCodes: [], filtered: []
-    }, filters: {
-        startDate: null, endDate: null, crimeTypes: ['all'], zipCode: 'all'
-    }, currentView: 'heatmap', // heatmap, choropleth, or points
-    isLoading: false, map: null, // Leaflet map instance
+        incidents: null,
+        zipCodes: null,
+        homicides: null,
+        violentCrime: null
+    },
+    processedData: {
+        incidents: [],
+        zipCodes: [],
+        homicides: [],
+        violentCrime: [],
+        filtered: [],
+        filteredHomicides: [],
+        filteredViolent: []
+    },
+    filters: {
+        startDate: null,
+        endDate: null,
+        crimeTypes: ['all'],
+        zipCode: 'all'
+    },
+    maps: {
+        incidents: null,
+        homicides: null,
+        violent: null
+    },
     layers: {
-        zipBoundaries: null, crimePoints: null
+        incidents: {zipBoundaries: null, crimePoints: null},
+        homicides: {zipBoundaries: null, crimePoints: null},
+        violent: {zipBoundaries: null, crimePoints: null}
     }
 };
 
-
 // UTILITY FUNCTIONS
-
-
 const Utils = {
     // Show/hide loading overlay
     setLoading(isLoading) {
@@ -119,14 +133,14 @@ const Utils = {
     // Get color for crime category
     getCrimeColor(category) {
         const colorMap = {
-            violent: CONFIG.colors.red,           // Red - #DE0505
-            sex: CONFIG.colors.purple,            // Purple - #59489F
-            property: CONFIG.colors.orange,       // Orange - #EA9B3E
-            fraud: CONFIG.colors.yellow,          // Yellow - #FADD4A (changed to darker)
-            drug: CONFIG.colors.medBlue,          // Med Blue - #02508E
-            publicOrder: CONFIG.colors.legacyGreen, // Legacy Green - #007953 (changed from light green)
-            weapons: CONFIG.colors.darkRed,       // Dark Red - #C70000
-            other: CONFIG.colors.blue             // Blue - #2F70B8
+            violent: CONFIG.colors.red,
+            sex: CONFIG.colors.purple,
+            property: CONFIG.colors.orange,
+            fraud: CONFIG.colors.yellow,
+            drug: CONFIG.colors.medBlue,
+            publicOrder: CONFIG.colors.legacyGreen,
+            weapons: CONFIG.colors.darkRed,
+            other: CONFIG.colors.blue
         };
         return colorMap[category] || CONFIG.colors.blue;
     },
@@ -152,10 +166,7 @@ const Utils = {
     }
 };
 
-
 // DATA LOADING & PROCESSING
-
-
 const DataManager = {
     // Load all datasets
     async loadAllData() {
@@ -175,12 +186,7 @@ const DataManager = {
             STATE.rawData.zipCodes = await zipResponse.json();
             console.log('ZIP codes loaded:', STATE.rawData.zipCodes.features?.length || 0);
 
-            // Log sample to help debug
-            if (STATE.rawData.zipCodes.features && STATE.rawData.zipCodes.features.length > 0) {
-                console.log('Sample ZIP feature:', STATE.rawData.zipCodes.features[0]);
-            }
-
-            // Load incidents (may be large - limit for demo if needed)
+            // Load incidents
             console.log('Fetching incidents from:', CONFIG.apis.incidents);
             const incidentsResponse = await fetch(CONFIG.apis.incidents);
 
@@ -191,10 +197,27 @@ const DataManager = {
             STATE.rawData.incidents = await incidentsResponse.json();
             console.log('Incidents loaded:', STATE.rawData.incidents.features?.length || 0);
 
-            // Log sample to help debug
-            if (STATE.rawData.incidents.features && STATE.rawData.incidents.features.length > 0) {
-                console.log('Sample incident feature:', STATE.rawData.incidents.features[0]);
+            // Load homicides
+            console.log('Fetching homicides from:', CONFIG.apis.homicides);
+            const homicidesResponse = await fetch(CONFIG.apis.homicides);
+
+            if (!homicidesResponse.ok) {
+                throw new Error(`Homicides API error: ${homicidesResponse.status}`);
             }
+
+            STATE.rawData.homicides = await homicidesResponse.json();
+            console.log('Homicides loaded:', STATE.rawData.homicides.features?.length || 0);
+
+            // Load violent crimes
+            console.log('Fetching violent crimes from:', CONFIG.apis.violentCrime);
+            const violentResponse = await fetch(CONFIG.apis.violentCrime);
+
+            if (!violentResponse.ok) {
+                throw new Error(`Violent crimes API error: ${violentResponse.status}`);
+            }
+
+            STATE.rawData.violentCrime = await violentResponse.json();
+            console.log('Violent crimes loaded:', STATE.rawData.violentCrime.features?.length || 0);
 
             // Process the data
             this.processData();
@@ -214,33 +237,25 @@ const DataManager = {
     processData() {
         console.log('Processing data...');
 
-        // Charlotte area bounds (Mecklenburg County approximate)
-        const CHARLOTTE_BOUNDS = {
-            minLon: -81.2, maxLon: -80.5, minLat: 34.9, maxLat: 35.5
-        };
-
-        // Function to check if a coordinate is reasonable (not world-spanning)
+        // Function to check if a coordinate is reasonable
         const isValidCoordinate = (lon, lat) => {
-            // Check if coordinates are in reasonable range for US
             return lon >= -180 && lon <= -70 && lat >= 25 && lat <= 50;
         };
 
-        // Process ZIP codes with minimal filtering
+        // Process ZIP codes
         let validCount = 0;
         let invalidCount = 0;
 
         STATE.processedData.zipCodes = STATE.rawData.zipCodes.features
-            .map((feature, index) => {
+            .map((feature) => {
                 const props = feature.properties;
                 const geom = feature.geometry;
 
-                // Very basic geometry check - just make sure coordinates exist and aren't null
                 if (!geom || !geom.coordinates || geom.coordinates.length === 0) {
                     invalidCount++;
                     return null;
                 }
 
-                // Check first coordinate to see if it's reasonable
                 let firstCoord;
                 if (geom.type === 'Polygon') {
                     firstCoord = geom.coordinates[0][0];
@@ -258,17 +273,15 @@ const DataManager = {
 
                 validCount++;
 
-                // Log first valid feature
-                if (validCount === 1) {
-                    console.log('First valid ZIP feature properties:', props);
-                }
-
-                // Try various field name patterns
                 const zipCode = props.ZIPCODE || props.ZIP || props.zip || props.ZIPCODE5 || props.ZIP5 || props.zip5 || props.GEOID || props.geoid || props.NAME || props.name;
 
                 return {
-                    type: 'Feature', geometry: feature.geometry, properties: {
-                        zipCode: zipCode, name: zipCode, ...props
+                    type: 'Feature',
+                    geometry: feature.geometry,
+                    properties: {
+                        zipCode: zipCode,
+                        name: zipCode,
+                        ...props
                     }
                 };
             })
@@ -276,17 +289,10 @@ const DataManager = {
 
         console.log(`Processed ${validCount} valid ZIP codes, rejected ${invalidCount} invalid`);
 
-        // If no ZIP codes, log error
-        if (STATE.processedData.zipCodes.length === 0) {
-            console.error('No valid ZIP codes found!');
-        }
-
         // Process incidents
         STATE.processedData.incidents = STATE.rawData.incidents.features.map(feature => {
             const props = feature.properties;
             const coords = feature.geometry?.coordinates || [];
-
-            // Try to extract date from various possible field names
             const dateValue = props.date || props.DATE || props.date_reported || props.DATE_REPORTED || props.datetime || props.DATETIME;
 
             return {
@@ -297,19 +303,74 @@ const DataManager = {
                 latitude: coords[1],
                 longitude: coords[0],
                 address: props.address || props.ADDRESS || '',
-                zipCode: props.zip || props.ZIP || props.zipcode || null, // Keep original for reference
+                zipCode: props.zip || props.ZIP || props.zipcode || null,
                 nibrsCode: props.highest_nibrs_code || props.HIGHEST_NIBRS_CODE || null
             };
-        }).filter(incident => // Filter out incidents without coordinates or with invalid dates
+        }).filter(incident =>
             incident.latitude && incident.longitude && !isNaN(incident.latitude) && !isNaN(incident.longitude) && incident.date instanceof Date && !isNaN(incident.date));
 
-        // Spatially join incidents to ZIP codes based on coordinates
-        console.log('Performing spatial join to match incidents to ZIP codes...');
+        console.log('Performing spatial join for incidents...');
         STATE.processedData.incidents = this.spatialJoinToZipCodes(STATE.processedData.incidents);
-
         console.log('Processed incidents:', STATE.processedData.incidents.length);
 
-        // Set default date range
+        // Process homicides
+        // Process homicides - REPLACE THIS SECTION
+        STATE.processedData.homicides = STATE.rawData.homicides.features.map(feature => {
+            const props = feature.properties;
+            const coords = feature.geometry?.coordinates || [];
+            const dateValue = props.DATE_REPORTED || props.date || props.DATE || props.date_reported || props.datetime || props.DATETIME;
+
+            return {
+                id: props.OBJECTID || props.objectid || Math.random(),
+                date: Utils.parseDate(dateValue),
+                type: props.highest_nibrs_description || props.HIGHEST_NIBRS_DESCRIPTION || 'Homicide',
+                category: 'violent',
+                latitude: coords[1],
+                longitude: coords[0],
+                address: props.LOCATION || props.address || props.ADDRESS || '',
+                zipCode: props.zip || props.ZIP || props.zipcode || null,
+                nibrsCode: props.highest_nibrs_code || props.HIGHEST_NIBRS_CODE || null,
+                // NEW: Extract additional properties for treemap
+                division: props.CMPD_PATROL_DIVISION || 'Unknown',
+                weapon: props.WEAPON || 'Unknown',
+                clearanceStatus: props.CLEARANCE_STATUS || 'Unknown',
+                circumstances: props.CIRCUMSTANCES || 'Unknown',
+                age: props.AGE,
+                gender: props.GENDER,
+                race: props.RACE_ETHNICITY
+            };
+        }).filter(incident =>
+            incident.latitude && incident.longitude && !isNaN(incident.latitude) && !isNaN(incident.longitude) && incident.date instanceof Date && !isNaN(incident.date));
+
+        console.log('Performing spatial join for homicides...');
+        STATE.processedData.homicides = this.spatialJoinToZipCodes(STATE.processedData.homicides);
+        console.log('Processed homicides:', STATE.processedData.homicides.length);
+
+        // Process violent crimes (note: this API returns JSON, not GeoJSON)
+        STATE.processedData.violentCrime = (STATE.rawData.violentCrime.features || []).map(feature => {
+            const props = feature.attributes || feature.properties;
+            const geom = feature.geometry;
+            const dateValue = props.date || props.DATE || props.date_reported || props.DATE_REPORTED;
+
+            return {
+                id: props.OBJECTID || props.objectid || Math.random(),
+                date: Utils.parseDate(dateValue),
+                type: props.highest_nibrs_description || props.HIGHEST_NIBRS_DESCRIPTION || 'Violent Crime',
+                category: 'violent',
+                latitude: geom?.y || geom?.coordinates?.[1],
+                longitude: geom?.x || geom?.coordinates?.[0],
+                address: props.address || props.ADDRESS || '',
+                zipCode: props.zip || props.ZIP || props.zipcode || null,
+                nibrsCode: props.highest_nibrs_code || props.HIGHEST_NIBRS_CODE || null
+            };
+        }).filter(incident =>
+            incident.latitude && incident.longitude && !isNaN(incident.latitude) && !isNaN(incident.longitude) && incident.date instanceof Date && !isNaN(incident.date));
+
+        console.log('Performing spatial join for violent crimes...');
+        STATE.processedData.violentCrime = this.spatialJoinToZipCodes(STATE.processedData.violentCrime);
+        console.log('Processed violent crimes:', STATE.processedData.violentCrime.length);
+
+        // Set default date range from incidents
         const dates = STATE.processedData.incidents.map(d => d.date);
         const minDate = new Date(Math.min(...dates));
         const maxDate = new Date(Math.max(...dates));
@@ -320,6 +381,12 @@ const DataManager = {
         // Set date inputs
         document.getElementById('startDate').value = minDate.toISOString().split('T')[0];
         document.getElementById('endDate').value = maxDate.toISOString().split('T')[0];
+
+        // Add min/max constraints to prevent selecting dates outside data range
+        document.getElementById('startDate').setAttribute('min', minDate.toISOString().split('T')[0]);
+        document.getElementById('startDate').setAttribute('max', maxDate.toISOString().split('T')[0]);
+        document.getElementById('endDate').setAttribute('min', minDate.toISOString().split('T')[0]);
+        document.getElementById('endDate').setAttribute('max', maxDate.toISOString().split('T')[0]);
 
         // Populate ZIP code dropdown
         this.populateZipCodeDropdown();
@@ -332,13 +399,11 @@ const DataManager = {
     populateZipCodeDropdown() {
         const select = document.getElementById('zipCode');
 
-        // Get ZIP codes from the clean boundary data instead of incident data
         const zipCodes = STATE.processedData.zipCodes
             .map(feature => feature.properties.zipCode)
-            .filter(zip => zip && zip.length === 5) // Only valid 5-digit ZIPs
+            .filter(zip => zip && zip.length === 5)
             .sort((a, b) => a.localeCompare(b));
 
-        // Remove duplicates
         const uniqueZips = [...new Set(zipCodes)];
 
         console.log('Populating ZIP dropdown with', uniqueZips.length, 'unique ZIP codes');
@@ -357,7 +422,6 @@ const DataManager = {
         let unmatched = 0;
 
         incidents.forEach(incident => {
-            // Find which ZIP code polygon contains this incident's coordinates
             for (const zipFeature of STATE.processedData.zipCodes) {
                 const point = [incident.longitude, incident.latitude];
 
@@ -377,7 +441,7 @@ const DataManager = {
         return incidents;
     },
 
-    // Check if a point is inside a polygon (supporting Polygon and MultiPolygon)
+    // Check if a point is inside a polygon
     pointInPolygon(point, geometry) {
         const [x, y] = point;
 
@@ -412,272 +476,588 @@ const DataManager = {
 
     // Apply filters to data
     applyFilters() {
+        // Filter incidents
         let filtered = STATE.processedData.incidents;
 
-        // Date filter
         if (STATE.filters.startDate) {
             filtered = filtered.filter(d => d.date >= STATE.filters.startDate);
         }
         if (STATE.filters.endDate) {
             filtered = filtered.filter(d => d.date <= STATE.filters.endDate);
         }
-
-        // Crime type filter
         if (!STATE.filters.crimeTypes.includes('all')) {
             filtered = filtered.filter(d => STATE.filters.crimeTypes.includes(d.category));
         }
-
-        // ZIP code filter
         if (STATE.filters.zipCode !== 'all') {
             filtered = filtered.filter(d => d.zipCode === STATE.filters.zipCode);
         }
 
         STATE.processedData.filtered = filtered;
+
+        // Filter homicides
+        let filteredHomicides = STATE.processedData.homicides;
+
+        if (STATE.filters.startDate) {
+            filteredHomicides = filteredHomicides.filter(d => d.date >= STATE.filters.startDate);
+        }
+        if (STATE.filters.endDate) {
+            filteredHomicides = filteredHomicides.filter(d => d.date <= STATE.filters.endDate);
+        }
+        if (STATE.filters.zipCode !== 'all') {
+            filteredHomicides = filteredHomicides.filter(d => d.zipCode === STATE.filters.zipCode);
+        }
+
+        STATE.processedData.filteredHomicides = filteredHomicides;
+
+        // Filter violent crimes
+        let filteredViolent = STATE.processedData.violentCrime;
+
+        if (STATE.filters.startDate) {
+            filteredViolent = filteredViolent.filter(d => d.date >= STATE.filters.startDate);
+        }
+        if (STATE.filters.endDate) {
+            filteredViolent = filteredViolent.filter(d => d.date <= STATE.filters.endDate);
+        }
+        if (STATE.filters.zipCode !== 'all') {
+            filteredViolent = filteredViolent.filter(d => d.zipCode === STATE.filters.zipCode);
+        }
+
+        STATE.processedData.filteredViolent = filteredViolent;
+
         console.log('Filtered incidents:', filtered.length);
+        console.log('Filtered homicides:', filteredHomicides.length);
+        console.log('Filtered violent crimes:', filteredViolent.length);
 
         // Update all visualizations
         Visualizations.updateAll();
     }
 };
 
-
 // VISUALIZATIONS
-
-
 const Visualizations = {
-    // Initialize Leaflet map
-    initMap() {
-        // Check if map already exists
-        if (STATE.map) {
-            STATE.map.remove();
+    // Initialize all three Leaflet maps
+    initMaps() {
+        // Incidents Map only
+        if (STATE.maps.incidents) {
+            STATE.maps.incidents.remove();
         }
 
-        // Create map centered on Charlotte
-        STATE.map = L.map('mapVisualization', {
-            center: [35.2271, -80.8431], zoom: 11, zoomControl: true
+        const incidentsEl = document.getElementById('mapVisualization');
+        if (!incidentsEl) {
+            console.warn('#mapVisualization not found; skipping incidents Leaflet init');
+            return;
+        }
+
+        STATE.maps.incidents = L.map(incidentsEl, {
+            center: [35.2271, -80.8431],
+            zoom: 11,
+            zoomControl: true
         });
 
-        // Add OpenStreetMap tiles
-        const tileLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
             maxZoom: 18,
-            minZoom: 10,
-            zIndex: 1
-        });
+            minZoom: 10
+        }).addTo(STATE.maps.incidents);
 
-        tileLayer.on('tileerror', function (error) {
-            console.error('Tile loading error:', error);
-        });
+        STATE.layers.incidents.zipBoundaries = L.layerGroup().addTo(STATE.maps.incidents);
+        STATE.layers.incidents.crimePoints = L.layerGroup().addTo(STATE.maps.incidents);
 
-        tileLayer.on('tileload', function () {
-            console.log('Tiles loading successfully');
-        });
+        console.log('Leaflet incidents map initialized');
 
-        tileLayer.addTo(STATE.map);
-
-        // Create layer groups with explicit z-index
-        STATE.layers.zipBoundaries = L.layerGroup().addTo(STATE.map);
-        STATE.layers.zipBoundaries.setZIndex(400);
-
-        STATE.layers.crimePoints = L.layerGroup().addTo(STATE.map);
-        STATE.layers.crimePoints.setZIndex(500);
-
-        console.log('Leaflet map initialized at', STATE.map.getCenter(), 'zoom:', STATE.map.getZoom());
-
-        // Force map to render properly
+        // Force map to render properly after layout
         setTimeout(() => {
-            STATE.map.invalidateSize();
-            console.log('Map size invalidated');
+            STATE.maps.incidents.invalidateSize();
         }, 100);
     },
+    updateViolentStackedArea() {
+        const data = STATE.processedData.filteredViolent;
 
+        const root = d3.select('#violentStackedArea');
+        root.selectAll('*').remove(); // clear prior render
+
+        if (!root.node()) {
+            console.warn('#violentStackedArea not found');
+            return;
+        }
+
+        if (!data || data.length === 0) {
+            root.append('div')
+                .style('display', 'flex')
+                .style('align-items', 'center')
+                .style('justify-content', 'center')
+                .style('height', '100%')
+                .style('color', '#6c757d')
+                .style('font-size', '16px')
+                .text('No violent-crime data for selected filters');
+            return;
+        }
+
+        // ---- Dimensions
+        const container = root.node();
+        const width = container.clientWidth || 900;
+        const height = 600;
+        const margin = {top: 30, right: 160, bottom: 50, left: 60};
+        const w = width - margin.left - margin.right;
+        const h = height - margin.top - margin.bottom;
+
+        const svg = root.append('svg')
+            .attr('width', width)
+            .attr('height', height);
+
+        const g = svg.append('g')
+            .attr('transform', `translate(${margin.left},${margin.top})`);
+
+        // ---- Aggregate by month and type (violent offenses only)
+        const monthKey = d => d3.timeMonth(d.date);
+        const byMonthType = d3.rollup(
+            data,
+            v => v.length,
+            d => monthKey(d),
+            d => (d.type || 'Unknown')
+        );
+
+        const months = Array.from(byMonthType.keys()).sort(d3.ascending);
+        const typeTotals = d3.rollup(data, v => v.length, d => (d.type || 'Unknown'));
+        const sortedTypes = Array.from(typeTotals.entries())
+            .sort((a, b) => b[1] - a[1])
+            .map(d => d[0]);
+
+        const TOP_K = Math.min(6, sortedTypes.length);
+        const topKeys = sortedTypes.slice(0, TOP_K);
+        const keys = topKeys.concat(sortedTypes.slice(TOP_K).length ? ['Other'] : []);
+
+        // Build rows for stack: {date, key1, key2, ..., Other}
+        const rows = months.map(m => {
+            const row = {date: m};
+            let monthTotal = 0;
+
+            topKeys.forEach(k => {
+                const v = byMonthType.get(m)?.get(k) ?? 0;
+                row[k] = v;
+                monthTotal += v;
+            });
+
+            if (keys.includes('Other')) {
+                // total across all types in this month
+                const thisMonthMap = byMonthType.get(m) || new Map();
+                const total = Array.from(thisMonthMap.values()).reduce((a, b) => a + b, 0);
+                row['Other'] = Math.max(0, total - monthTotal);
+            }
+
+            return row;
+        });
+
+        // ---- Scales
+        const x = d3.scaleTime()
+            .domain(d3.extent(months))
+            .range([0, w]);
+
+        const stack = d3.stack().keys(keys).order(d3.stackOrderNone).offset(d3.stackOffsetNone);
+        const series = stack(rows);
+
+        const y = d3.scaleLinear()
+            .domain([0, d3.max(series, s => d3.max(s, d => d[1]))]).nice()
+            .range([h, 0]);
+
+        const color = d3.scaleOrdinal()
+            .domain(keys)
+            .range(d3.schemeTableau10.concat(['#999999']).slice(0, keys.length));
+
+        // ---- Axes + grid
+        g.append('g')
+            .attr('class', 'grid')
+            .attr('opacity', 0.1)
+            .call(d3.axisLeft(y).tickSize(-w).tickFormat(''));
+
+        g.append('g')
+            .attr('class', 'axis')
+            .attr('transform', `translate(0,${h})`)
+            .call(d3.axisBottom(x).ticks(8));
+
+        g.append('g')
+            .attr('class', 'axis')
+            .call(d3.axisLeft(y));
+
+        // ---- Area layers
+        const area = d3.area()
+            .x(d => x(d.data.date))
+            .y0(d => y(d[0]))
+            .y1(d => y(d[1]))
+            .curve(d3.curveMonotoneX);
+
+        g.selectAll('.area-layer')
+            .data(series)
+            .enter()
+            .append('path')
+            .attr('class', 'area-layer')
+            .attr('d', area)
+            .attr('fill', d => color(d.key))
+            .attr('opacity', 0.8);
+
+        // ---- Legend (chart-specific; not the Leaflet map legend)
+        const legend = svg.append('g')
+            .attr('transform', `translate(${width - margin.right + 20}, ${margin.top})`)
+            .attr('class', 'stacked-legend');
+
+        const legendItem = legend.selectAll('g')
+            .data(keys)
+            .enter()
+            .append('g')
+            .attr('transform', (d, i) => `translate(0, ${i * 22})`);
+
+        legendItem.append('rect')
+            .attr('width', 14)
+            .attr('height', 14)
+            .attr('rx', 3)
+            .attr('ry', 3)
+            .attr('fill', d => color(d));
+
+        legendItem.append('text')
+            .attr('x', 20)
+            .attr('y', 11)
+            .style('font-size', '12px')
+            .text(d => d);
+
+        // ---- Tooltip
+        const overlay = g.append('rect')
+            .attr('fill', 'transparent')
+            .attr('pointer-events', 'all')
+            .attr('width', w)
+            .attr('height', h);
+
+        const bisect = d3.bisector(d => d.date).center;
+
+        overlay
+            .on('mousemove', (event) => {
+                const xm = d3.pointer(event, overlay.node())[0];
+                const date = x.invert(xm);
+                const idx = bisect(rows, date);
+                const row = rows[Math.max(0, Math.min(rows.length - 1, idx))];
+
+                // Build tooltip content
+                const total = keys.reduce((acc, k) => acc + (row[k] || 0), 0);
+                const lines = keys.map(k => `<div><strong>${k}:</strong> ${row[k] || 0}</div>`).join('');
+                Utils.showTooltip(event, `
+                <strong>${row.date.toLocaleDateString('en-US', {year: 'numeric', month: 'short'})}</strong><br/>
+                ${lines}
+                <div style="margin-top:6px;"><strong>Total:</strong> ${total}</div>
+            `);
+            })
+            .on('mouseout', Utils.hideTooltip);
+
+        // ---- Axis labels
+        g.append('text')
+            .attr('x', w / 2)
+            .attr('y', h + 40)
+            .attr('text-anchor', 'middle')
+            .style('font-weight', 600)
+            .text('Month');
+
+        g.append('text')
+            .attr('transform', 'rotate(-90)')
+            .attr('x', -h / 2)
+            .attr('y', -45)
+            .attr('text-anchor', 'middle')
+            .style('font-weight', 600)
+            .text('Incidents');
+    },
     // Update all visualizations
     updateAll() {
-        this.updateMap();
+        this.updateIncidentsMap();
+        this.updateHomicidesMap();
+        this.updateViolentStackedArea();
         this.updateTrendChart();
         this.updateDistributionChart();
     },
 
-    // Create/update map visualization
-    updateMap() {
+    // Update Incidents Map
+    updateIncidentsMap() {
         const data = STATE.processedData.filtered;
         const zipCodes = STATE.processedData.zipCodes;
+        const map = STATE.maps.incidents;
+        const layers = STATE.layers.incidents;
 
-        console.log('updateMap called with', zipCodes.length, 'ZIP codes and', data.length, 'crimes');
+        this.renderMap(map, layers, data, zipCodes, 'mapLegend');
+    },
 
-        // Clear ALL existing layers from the map
-        STATE.map.eachLayer(function (layer) {
-            // Don't remove the tile layer
+    // Update Homicides Map
+    // Update Homicides Treemap - REPLACE ENTIRE FUNCTION
+    updateHomicidesMap() {
+        const data = STATE.processedData.filteredHomicides;
+
+        // Clear existing
+        d3.select('#homicidesTreemap').selectAll('*').remove();
+
+        if (data.length === 0) {
+            d3.select('#homicidesTreemap')
+                .append('div')
+                .style('display', 'flex')
+                .style('align-items', 'center')
+                .style('justify-content', 'center')
+                .style('height', '100%')
+                .style('color', '#6c757d')
+                .style('font-size', '16px')
+                .text('No homicide data available for selected filters');
+            return;
+        }
+
+        // Build hierarchy: Division → Weapon (2 levels only)
+        const nested = d3.group(data,
+            d => d.division,
+            d => d.weapon
+        );
+
+        // Convert to hierarchical structure
+        const hierarchyData = {
+            name: 'Homicides',
+            children: Array.from(nested, ([division, weapons]) => ({
+                name: division,
+                children: Array.from(weapons, ([weapon, items]) => ({
+                    name: weapon,
+                    value: items.length,
+                    data: items
+                }))
+            }))
+        };
+
+        const container = document.getElementById('homicidesTreemap');
+        const width = container.clientWidth;
+        const height = 600;
+
+        const svg = d3.select('#homicidesTreemap')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height);
+
+        // Create hierarchy
+        const root = d3.hierarchy(hierarchyData)
+            .sum(d => d.value)
+            .sort((a, b) => b.value - a.value);
+
+        // Create treemap layout with more padding
+        d3.treemap()
+            .size([width, height])
+            .padding(3)
+            .round(true)
+            (root);
+
+        // Color scale for divisions
+        const divisions = Array.from(new Set(data.map(d => d.division)));
+        const colorScale = d3.scaleOrdinal()
+            .domain(divisions)
+            .range([
+                CONFIG.colors.red,
+                CONFIG.colors.darkRed,
+                CONFIG.colors.orange,
+                CONFIG.colors.purple,
+                CONFIG.colors.medBlue,
+                CONFIG.colors.blue,
+                CONFIG.colors.legacyGreen,
+                CONFIG.colors.darkGreen,
+                '#8B4513', // Brown
+                '#FF6B6B', // Light red
+                '#4ECDC4', // Teal
+                '#95E1D3'  // Mint
+            ]);
+
+        // Create cells
+        const cell = svg.selectAll('g')
+            .data(root.leaves())
+            .enter()
+            .append('g')
+            .attr('transform', d => `translate(${d.x0},${d.y0})`);
+
+        // Add rectangles
+        cell.append('rect')
+            .attr('class', 'treemap-cell')
+            .attr('width', d => d.x1 - d.x0)
+            .attr('height', d => d.y1 - d.y0)
+            .attr('fill', d => {
+                // Get division (parent)
+                const division = d.parent.data.name;
+                return colorScale(division);
+            })
+            .attr('stroke', '#fff')
+            .attr('stroke-width', 2)
+            .on('mouseover', function (event, d) {
+                const division = d.parent.data.name;
+                const weapon = d.data.name;
+                const count = d.value;
+                const percentage = ((count / data.length) * 100).toFixed(1);
+
+                Utils.showTooltip(event, `
+                <strong>${division}</strong><br/>
+                Weapon: ${weapon}<br/>
+                Count: ${count} (${percentage}%)
+            `);
+            })
+            .on('mouseout', Utils.hideTooltip);
+
+        // Add weapon labels
+        cell.append('text')
+            .attr('class', 'treemap-label')
+            .attr('x', d => (d.x1 - d.x0) / 2)
+            .attr('y', d => (d.y1 - d.y0) / 2 - 8)
+            .text(d => {
+                const width = d.x1 - d.x0;
+                const height = d.y1 - d.y0;
+                // Only show label if cell is large enough
+                if (width > 80 && height > 50) {
+                    const weapon = d.data.name;
+                    // Truncate long weapon names
+                    return weapon.length > 15 ? weapon.substring(0, 12) + '...' : weapon;
+                }
+                return '';
+            });
+
+        // Add count
+        cell.append('text')
+            .attr('class', 'treemap-sublabel')
+            .attr('x', d => (d.x1 - d.x0) / 2)
+            .attr('y', d => (d.y1 - d.y0) / 2 + 8)
+            .text(d => {
+                const width = d.x1 - d.x0;
+                const height = d.y1 - d.y0;
+                if (width > 50 && height > 40) {
+                    return d.value;
+                }
+                return '';
+            });
+
+        // Add division name (smaller)
+        cell.append('text')
+            .attr('class', 'treemap-sublabel')
+            .style('font-size', '9px')
+            .style('opacity', '0.8')
+            .attr('x', d => (d.x1 - d.x0) / 2)
+            .attr('y', d => (d.y1 - d.y0) / 2 + 22)
+            .text(d => {
+                const width = d.x1 - d.x0;
+                const height = d.y1 - d.y0;
+                if (width > 80 && height > 60) {
+                    const division = d.parent.data.name;
+                    return division.length > 12 ? division.substring(0, 10) + '...' : division;
+                }
+                return '';
+            });
+    },
+
+    // Generalized map rendering function
+    renderMap(map, layers, data, zipCodes, legendId) {
+        console.log('Rendering map with', data.length, 'crimes');
+
+        // Clear existing layers
+        map.eachLayer(function (layer) {
             if (layer instanceof L.TileLayer) {
                 return;
             }
-            // Remove everything else (markers, boundaries, etc.)
-            STATE.map.removeLayer(layer);
+            map.removeLayer(layer);
         });
 
-        // Clear layer groups safely
-        if (STATE.layers.zipBoundaries) {
-            STATE.layers.zipBoundaries.clearLayers();
+        if (layers.zipBoundaries) {
+            layers.zipBoundaries.clearLayers();
         }
-        if (STATE.layers.crimePoints) {
-            STATE.layers.crimePoints.clearLayers();
+        if (layers.crimePoints) {
+            layers.crimePoints.clearLayers();
         }
 
-        // Verify map and layers exist
-        if (!STATE.map) {
+        if (!map) {
             console.error('Map not initialized');
             return;
         }
 
         // Add ZIP code boundaries
         if (zipCodes && zipCodes.length > 0) {
-            // Pre-calculate crime counts per ZIP for choropleth
-            const crimeCountsByZip = new Map();
-            if (STATE.currentView === 'choropleth') {
-                data.forEach(crime => {
-                    const count = crimeCountsByZip.get(crime.zipCode) || 0;
-                    crimeCountsByZip.set(crime.zipCode, count + 1);
-                });
+            zipCodes.forEach(zipFeature => {
+                const zipCode = zipFeature.properties.zipCode;
+                const crimeCount = data.filter(crime => crime.zipCode === zipCode).length;
 
-                // Find max for color scale
-                const maxCrimes = Math.max(...Array.from(crimeCountsByZip.values()));
-                console.log('Choropleth max crimes:', maxCrimes);
+                const style = {
+                    fillColor: '#e0e0e0',
+                    weight: 2,
+                    opacity: 1,
+                    color: '#24B24A',
+                    fillOpacity: 0.3
+                };
 
-                zipCodes.forEach(zipFeature => {
-                    const zipCode = zipFeature.properties.zipCode;
-                    const crimeCount = crimeCountsByZip.get(zipCode) || 0;
+                const layer = L.geoJSON(zipFeature, {
+                    style: style,
+                    onEachFeature: (feature, layer) => {
+                        layer.on({
+                            mouseover: (e) => {
+                                e.target.setStyle({
+                                    fillColor: '#71BF44',
+                                    fillOpacity: 0.7
+                                });
+                            },
+                            mouseout: (e) => {
+                                e.target.setStyle(style);
+                            }
+                        });
 
-                    const intensity = crimeCount / maxCrimes;
-                    const style = {
-                        fillColor: d3.interpolateReds(intensity),
-                        weight: 2,
-                        opacity: 1,
-                        color: '#24B24A',
-                        fillOpacity: 0.7
-                    };
-
-                    const layer = L.geoJSON(zipFeature, {
-                        style: style, onEachFeature: (feature, layer) => {
-                            layer.bindPopup(`
-                                <strong>ZIP Code: ${zipCode}</strong><br/>
-                                Incidents: ${crimeCount}
-                            `);
-                        }
-                    });
-
-                    if (STATE.layers.zipBoundaries) {
-                        STATE.layers.zipBoundaries.addLayer(layer);
+                        layer.bindPopup(`
+                            <strong>ZIP Code: ${zipCode}</strong><br/>
+                            Incidents: ${crimeCount}
+                        `);
                     }
                 });
-            } else {
-                // Regular view - just show boundaries
-                zipCodes.forEach(zipFeature => {
-                    const zipCode = zipFeature.properties.zipCode;
-                    const crimeCount = data.filter(crime => crime.zipCode === zipCode).length;
 
-                    const style = {
-                        fillColor: '#e0e0e0', weight: 2, opacity: 1, color: '#24B24A', fillOpacity: 0.3
-                    };
-
-                    const layer = L.geoJSON(zipFeature, {
-                        style: style, onEachFeature: (feature, layer) => {
-                            layer.on({
-                                mouseover: (e) => {
-                                    e.target.setStyle({
-                                        fillColor: '#7BF44', fillOpacity: 0.7
-                                    });
-                                }, mouseout: (e) => {
-                                    e.target.setStyle(style);
-                                }
-                            });
-
-                            layer.bindPopup(`
-                                <strong>ZIP Code: ${zipCode}</strong><br/>
-                                Incidents: ${crimeCount}
-                            `);
-                        }
-                    });
-
-                    if (STATE.layers.zipBoundaries) {
-                        STATE.layers.zipBoundaries.addLayer(layer);
-                    }
-                });
-            }
+                if (layers.zipBoundaries) {
+                    layers.zipBoundaries.addLayer(layer);
+                }
+            });
         }
 
         // Add crime points
-        if (STATE.currentView === 'points' || STATE.currentView === 'heatmap') {
-            console.log('Adding', data.length, 'crime points to map');
+        console.log('Adding', data.length, 'crime points to map');
 
-            let successCount = 0;
-            let errorCount = 0;
+        data.forEach((crime) => {
+            if (!crime.latitude || !crime.longitude) {
+                return;
+            }
 
-            data.forEach((crime, index) => {
-                if (!crime.latitude || !crime.longitude) {
-                    return; // Skip if no coordinates
-                }
+            const color = Utils.getCrimeColor(crime.category);
 
-                try {
-                    const color = Utils.getCrimeColor(crime.category);
-
-                    // Create a custom DivIcon instead of CircleMarker
-                    const icon = L.divIcon({
-                        className: 'crime-marker',
-                        html: `<div style="background-color: ${color}; width: 8px; height: 8px; border-radius: 50%; border: 1px solid white;"></div>`,
-                        iconSize: [8, 8]
-                    });
-
-                    const marker = L.marker([crime.latitude, crime.longitude], {
-                        icon: icon
-                    });
-
-                    marker.bindPopup(`
-                        <strong>${crime.type}</strong><br/>
-                        Date: ${Utils.formatDate(crime.date)}<br/>
-                        Category: ${crime.category}<br/>
-                        ${crime.address ? 'Location: ' + crime.address : ''}
-                    `);
-
-                    // Add directly to map
-                    marker.addTo(STATE.map);
-                    successCount++;
-                } catch (error) {
-                    errorCount++;
-                    if (errorCount <= 3) {
-                        console.error('Error adding marker:', error);
-                    }
-                }
+            const icon = L.divIcon({
+                className: 'crime-marker',
+                html: `<div style="background-color: ${color}; width: 8px; height: 8px; border-radius: 50%; border: 1px solid white;"></div>`,
+                iconSize: [8, 8]
             });
 
-            console.log('Crime points added:', successCount, 'successful,', errorCount, 'errors');
-        }
+            const marker = L.marker([crime.latitude, crime.longitude], {
+                icon: icon
+            });
+
+            marker.bindPopup(`
+                <strong>${crime.type}</strong><br/>
+                Date: ${Utils.formatDate(crime.date)}<br/>
+                Category: ${crime.category}<br/>
+                ${crime.address ? 'Location: ' + crime.address : ''}
+            `);
+
+            marker.addTo(map);
+        });
 
         // Update legend
-        this.updateMapLegend();
+        this.updateMapLegend(legendId);
     },
 
     // Update map legend
-    updateMapLegend() {
-        const legend = d3.select('#mapLegend');
+    updateMapLegend(legendId) {
+        const legend = d3.select(`#${legendId}`);
         legend.selectAll('*').remove();
 
-        const categories = [{
-            name: 'Violent Crimes',
-            color: CONFIG.colors.red,
-            category: 'violent'
-        }, {name: 'Sex Crimes', color: CONFIG.colors.purple, category: 'sex'}, {
-            name: 'Property Crimes',
-            color: CONFIG.colors.orange,
-            category: 'property'
-        }, {name: 'Fraud / Financial', color: CONFIG.colors.yellow, category: 'fraud'}, {
-            name: 'Drug & Alcohol',
-            color: CONFIG.colors.medBlue,
-            category: 'drug'
-        }, {name: 'Public Order', color: CONFIG.colors.legacyGreen, category: 'publicOrder'}, {
-            name: 'Weapons',
-            color: CONFIG.colors.darkRed,
-            category: 'weapons'
-        }, {name: 'Other', color: CONFIG.colors.blue, category: 'other'}];
+        const categories = [
+            {name: 'Violent Crimes', color: CONFIG.colors.red},
+            {name: 'Sex Crimes', color: CONFIG.colors.purple},
+            {name: 'Property Crimes', color: CONFIG.colors.orange},
+            {name: 'Fraud / Financial', color: CONFIG.colors.yellow},
+            {name: 'Drug & Alcohol', color: CONFIG.colors.medBlue},
+            {name: 'Public Order', color: CONFIG.colors.legacyGreen},
+            {name: 'Weapons', color: CONFIG.colors.darkRed},
+            {name: 'Other', color: CONFIG.colors.blue}
+        ];
 
         categories.forEach(cat => {
             const item = legend.append('div').attr('class', 'legend-item');
@@ -694,12 +1074,9 @@ const Visualizations = {
     updateTrendChart() {
         const data = STATE.processedData.filtered;
 
-        // Clear existing chart
         d3.select('#trendVisualization').selectAll('*').remove();
 
         const svg = d3.select('#trendVisualization');
-
-        // Get actual container width dynamically
         const container = document.getElementById('trendVisualization');
         const containerWidth = container.clientWidth;
 
@@ -710,7 +1087,6 @@ const Visualizations = {
         const g = svg.append('g')
             .attr('transform', `translate(${margin.left},${margin.top})`);
 
-        // Aggregate data by month
         const monthlyData = d3.rollup(data, v => v.length, d => d3.timeMonth(d.date));
 
         const aggregated = Array.from(monthlyData, ([date, count]) => ({date, count}))
@@ -727,7 +1103,6 @@ const Visualizations = {
             return;
         }
 
-        // Scales
         const x = d3.scaleTime()
             .domain(d3.extent(aggregated, d => d.date))
             .range([0, width]);
@@ -737,13 +1112,11 @@ const Visualizations = {
             .nice()
             .range([height, 0]);
 
-        // Add grid
         g.append('g')
             .attr('class', 'grid')
             .attr('opacity', 0.1)
             .call(d3.axisLeft(y).tickSize(-width).tickFormat(''));
 
-        // Add axes
         g.append('g')
             .attr('class', 'axis')
             .attr('transform', `translate(0,${height})`)
@@ -757,7 +1130,6 @@ const Visualizations = {
             .selectAll('text')
             .style('font-size', '12px');
 
-        // Add area first (behind line)
         const area = d3.area()
             .x(d => x(d.date))
             .y0(height)
@@ -769,7 +1141,6 @@ const Visualizations = {
             .attr('class', 'line-area')
             .attr('d', area);
 
-        // Add line
         const line = d3.line()
             .x(d => x(d.date))
             .y(d => y(d.count))
@@ -780,7 +1151,6 @@ const Visualizations = {
             .attr('class', 'line')
             .attr('d', line);
 
-        // Add labels
         g.append('text')
             .attr('x', width / 2)
             .attr('y', height + 50)
@@ -803,23 +1173,19 @@ const Visualizations = {
     updateDistributionChart() {
         const data = STATE.processedData.filtered;
 
-        // Clear existing chart
         d3.select('#distributionVisualization').selectAll('*').remove();
 
         const svg = d3.select('#distributionVisualization');
-
-        // Get actual container width dynamically
         const container = document.getElementById('distributionVisualization');
         const containerWidth = container.clientWidth;
 
-        const margin = {top: 30, right: 30, bottom: 120, left: 70}; // Increased bottom for rotated labels
+        const margin = {top: 30, right: 30, bottom: 120, left: 70};
         const width = containerWidth - margin.left - margin.right;
         const height = 500 - margin.top - margin.bottom;
 
         const g = svg.append('g')
             .attr('transform', `translate(${margin.left},${margin.top})`);
 
-        // Aggregate by category
         const categoryData = d3.rollup(data, v => v.length, d => d.category);
 
         const aggregated = Array.from(categoryData, ([category, count]) => ({
@@ -837,7 +1203,6 @@ const Visualizations = {
             return;
         }
 
-        // Scales
         const x = d3.scaleBand()
             .domain(aggregated.map(d => d.category))
             .range([0, width])
@@ -848,13 +1213,11 @@ const Visualizations = {
             .nice()
             .range([height, 0]);
 
-        // Add grid
         g.append('g')
             .attr('class', 'grid')
             .attr('opacity', 0.1)
             .call(d3.axisLeft(y).tickSize(-width).tickFormat(''));
 
-        // Add axes
         g.append('g')
             .attr('class', 'axis')
             .attr('transform', `translate(0,${height})`)
@@ -872,7 +1235,6 @@ const Visualizations = {
             .selectAll('text')
             .style('font-size', '12px');
 
-        // Add bars
         g.selectAll('.bar')
             .data(aggregated)
             .enter()
@@ -895,7 +1257,6 @@ const Visualizations = {
                 Utils.hideTooltip();
             });
 
-        // Add labels
         g.append('text')
             .attr('x', width / 2)
             .attr('y', height + 100)
@@ -912,15 +1273,11 @@ const Visualizations = {
             .style('font-size', '14px')
             .style('font-weight', '600')
             .text('Number of Incidents');
-    },
+    }
 };
 
-
 // EVENT HANDLERS
-
-
 const EventHandlers = {
-    // Initialize all event listeners
     init() {
         // Date filters
         document.getElementById('startDate').addEventListener('change', (e) => {
@@ -962,28 +1319,15 @@ const EventHandlers = {
 
             DataManager.applyFilters();
         });
-
-        // Map view toggle
-        document.querySelectorAll('.view-option').forEach(option => {
-            option.addEventListener('click', (e) => {
-                document.querySelectorAll('.view-option').forEach(opt => opt.classList.remove('active'));
-                e.target.classList.add('active');
-                STATE.currentView = e.target.dataset.view;
-                Visualizations.updateMap();
-            });
-        });
     }
 };
 
-
 // INITIALIZATION
-
-
 async function init() {
     console.log('Initializing Charlotte Crime Dashboard...');
 
-    // Initialize Leaflet map first
-    Visualizations.initMap();
+    // Initialize all three Leaflet maps
+    Visualizations.initMaps();
 
     // Set up event handlers
     EventHandlers.init();

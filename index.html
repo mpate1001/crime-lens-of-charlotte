@@ -54,7 +54,7 @@
                 <div class="control-group">
                     <label for="crimeType">Crime Type</label>
                     <span class="helper-text">Select one or Ctrl+Click for multiple</span>
-                    <select aria-label="Select crime types" id="crimeType" multiple name="crimeType" size="8">
+                    <select aria-label="Select crime types" id="crimeType" multiple name="crimeType" size="2">
                         <option selected value="all">All Crime Types</option>
                         <option value="violent">Violent Crimes</option>
                         <option value="sex">Sex Crimes</option>
@@ -88,21 +88,34 @@
         <!-- Visualization Grid -->
         <div class="visualization-grid">
 
-            <!-- Crime Map -->
+            <!-- Incident Crime Map -->
             <section class="viz-panel viz-panel-large" id="mapPanel">
                 <div class="panel-header">
-                    <h2 class="panel-title">Crime Map</h2>
-                    <div class="panel-controls">
-                        <button aria-label="Toggle map view" class="btn-view-toggle" id="mapViewToggle">
-                            <span class="view-option active" data-view="heatmap">All Incidents</span>
-                            <span class="view-option" data-view="choropleth">Crime Density</span>
-                            <span class="view-option" data-view="points">Individual Points</span>
-                        </button>
-                    </div>
+                    <h2 class="panel-title">Incident Crime Map</h2>
                 </div>
                 <div class="panel-content">
                     <div id="mapVisualization" style="height: 600px; width: 100%;"></div>
                     <div class="map-legend" id="mapLegend"></div>
+                </div>
+            </section>
+
+            <!-- Homicides Crime Map -->
+            <section class="viz-panel viz-panel-large" id="homicidesMapPanel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Homicides by Patrol Division & Weapon Type</h2>
+                </div>
+                <div class="panel-content">
+                    <div id="homicidesTreemap" style="width: 100%; height: 625px;"></div>
+                </div>
+            </section>
+
+            <!-- Violent Crimes Map -->
+            <section class="viz-panel viz-panel-large" id="violentMapPanel">
+                <div class="panel-header">
+                    <h2 class="panel-title">Violent Crimes Over Time by Type</h2>
+                </div>
+                <div class="panel-content">
+                    <div id="violentStackedArea" style="width: 100%; height: 600px;"></div>
                 </div>
             </section>
 
