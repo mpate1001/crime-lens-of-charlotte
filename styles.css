@@ -127,9 +127,9 @@ body {
 .dashboard-header .container {
     position: relative;
     display: flex;
-    flex-direction: column; /* stack title/subtitle */
-    align-items: center; /* center horizontally */
-    justify-content: center; /* center vertically within header */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     padding-inline: var(--spacing-xl);
 }
 
@@ -162,7 +162,6 @@ body {
 }
 
 /* Main Content */
-
 
 .dashboard-main {
     flex: 1;
@@ -268,6 +267,7 @@ body {
     padding: var(--spacing-md);
     background-color: var(--dark-charlotte-green);
     color: var(--paper-white);
+    border: none;
     border-radius: var(--border-radius);
     font-size: var(--font-size-base);
     font-weight: 700;
@@ -278,7 +278,7 @@ body {
 }
 
 .btn-reset:hover {
-    background-color: var(--red);
+    background-color: var(--legacy-green);
     transform: translateY(-2px);
     box-shadow: var(--box-shadow-hover);
 }
@@ -308,19 +308,13 @@ body {
     box-shadow: var(--box-shadow-hover);
 }
 
-/* Panel Sizes */
-.viz-panel-large {
-    grid-column: span 12;
-}
-
-#trendPanel {
-    grid-column: span 12;
-}
-
-#distributionPanel {
-    grid-column: span 12;
-}
-
+/* Panel Sizes - All maps and charts full width */
+.viz-panel-large,
+#mapPanel,
+#homicidesMapPanel,
+#violentMapPanel,
+#trendPanel,
+#distributionPanel,
 #statsPanel {
     grid-column: span 12;
 }
@@ -348,10 +342,17 @@ body {
     overflow: visible;
 }
 
-/* Map panel needs no padding */
-#mapPanel .panel-content {
+/* All map panels need consistent styling */
+#mapPanel .panel-content,
+#violentMapPanel .panel-content {
     padding: 0;
     height: 600px;
+}
+
+/* Treemap panel needs different styling */
+#homicidesMapPanel .panel-content {
+    padding: var(--spacing-md);
+    height: 625px;
 }
 
 /* SVG Containers */
@@ -361,7 +362,9 @@ svg {
     display: block;
 }
 
-#mapVisualization {
+/* All map visualizations */
+#mapVisualization,
+#violentMapVisualization {
     height: 600px !important;
     width: 100% !important;
     position: relative;
@@ -404,10 +407,7 @@ svg {
     border-radius: var(--border-radius);
 }
 
-.map-legend {
-    z-index: 1000;
-}
-
+/* Chart heights */
 #trendVisualization {
     min-height: 400px;
 }
@@ -416,49 +416,7 @@ svg {
     min-height: 500px;
 }
 
-.panel-content {
-    padding: 0;
-    position: relative;
-    overflow: visible; /* Changed to visible to prevent label cutoff */
-}
-
-/* View Toggle Buttons */
-
-.btn-view-toggle {
-    display: flex;
-    background-color: var(--paper-white);
-    border: 2px solid var(--border-color);
-    border-radius: var(--border-radius);
-    overflow: hidden;
-}
-
-.view-option {
-    padding: var(--spacing-sm) var(--spacing-md);
-    font-size: var(--font-size-sm);
-    font-weight: 700;
-    color: var(--text-black);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-    border-right: 1px solid var(--border-color);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.view-option:last-child {
-    border-right: none;
-}
-
-.view-option:hover {
-    background-color: var(--bg-light);
-}
-
-.view-option.active {
-    background-color: var(--dark-charlotte-green);
-    color: var(--paper-white);
-}
-
 /* Map Legend */
-
 .map-legend {
     position: absolute;
     bottom: var(--spacing-lg);
@@ -469,6 +427,7 @@ svg {
     box-shadow: var(--box-shadow);
     font-size: var(--font-size-sm);
     border: 2px solid var(--dark-charlotte-green);
+    z-index: 1000;
 }
 
 .legend-item {
@@ -487,6 +446,51 @@ svg {
 .legend-label {
     color: var(--text-black);
     font-weight: 400;
+}
+
+/* Treemap Styles */
+#homicidesTreemap {
+    width: 100%;
+    height: 625px;
+    background: var(--bg-light);
+}
+
+.treemap-cell {
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.treemap-cell:hover {
+    opacity: 0.8;
+    stroke: var(--dark-charlotte-green);
+    stroke-width: 3px;
+}
+
+.treemap-label {
+    font-family: var(--font-family);
+    font-size: 12px;
+    font-weight: 600;
+    fill: white;
+    text-anchor: middle;
+    pointer-events: none;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.treemap-sublabel {
+    font-family: var(--font-family);
+    font-size: 10px;
+    fill: white;
+    text-anchor: middle;
+    pointer-events: none;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.treemap-legend {
+    font-family: var(--font-family);
+}
+
+.treemap-legend text {
+    fill: var(--text-black);
 }
 
 /* Layout: two-column grid for About This Data */
@@ -553,7 +557,7 @@ svg {
 .data-timestamp {
     font-size: var(--font-size-lg);
     padding-top: var(--spacing-md);
-    grid-column: 1 / -1; /* span full width below both columns */
+    grid-column: 1 / -1;
     margin-top: var(--spacing-sm);
     color: var(--text-secondary);
     text-align: right;
@@ -627,6 +631,7 @@ svg {
     width: 60px;
     height: 60px;
     border: 4px solid var(--border-color);
+    border-top-color: var(--dark-charlotte-green);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -648,7 +653,6 @@ svg {
 
 /* Map Styles */
 .zip-boundary {
-    /* Styles will be set inline by JavaScript */
     transition: fill var(--transition-fast);
     cursor: pointer;
 }
@@ -742,6 +746,9 @@ svg {
 /* Responsive Design */
 
 @media (max-width: 1024px) {
+    #mapPanel,
+    #homicidesMapPanel,
+    #violentMapPanel,
     #trendPanel,
     #distributionPanel {
         grid-column: span 12;
@@ -778,19 +785,8 @@ svg {
         display: none;
     }
 
-    .btn-view-toggle {
-        flex-direction: column;
-    }
-
-    .view-option {
-        border-bottom: 1px solid var(--border-color);
-    }
-
-    .view-option:last-child {
-        border-bottom: none;
-    }
-
-    #mapVisualization {
+    #mapVisualization,
+    #violentMapVisualization {
         min-height: 400px;
     }
 
