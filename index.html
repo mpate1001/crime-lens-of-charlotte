@@ -1,141 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Interactive crime visualization dashboard for Charlotte, NC" name="description">
-    <title>Crime Lens of CLT</title>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <meta content="Interactive crime visualization dashboard for Charlotte, NC" name="description"/>
+    <title>Crime Lens of Charlotte</title>
 
-    <!-- D3.js Library -->
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-
-    <!-- Leaflet for map tiles -->
+    <!-- Leaflet -->
     <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- External Stylesheet -->
-    <link href="styles.css" rel="stylesheet">
-    <link href="favicon/favicon.ico" rel="icon" sizes="any">
+    <!-- D3 -->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <!-- App styles -->
+    <link href="favicon/favicon.ico" rel="icon" sizes="any"/>
+    <link href="styles.css" rel="stylesheet"/>
 </head>
 <body>
-<!-- Header Section -->
+
+<!-- Header -->
 <header class="dashboard-header">
     <div class="container">
         <a class="brand" href="/">
-            <img alt="Crime Lens of Charlotte"
-                 decoding="async"
-                 fetchpriority="high" height="150" src="/favicon/crime-lens-charlotte.svg" width="150"/>
+            <img alt="Crime Lens of Charlotte" decoding="async" height="150" src="favicon/crime-lens-charlotte.svg"
+                 width="150"/>
         </a>
-        <h1 class="dashboard-title" style="text-align: center;">Crime Lens of Charlotte</h1>
-        <p class="dashboard-subtitle" style="text-align: center;">Exploring Crime in Charlotte</p>
+        <h1 class="dashboard-title">Crime Lens of Charlotte</h1>
+        <p class="dashboard-subtitle">Exploring Crime in Charlotte</p>
     </div>
 </header>
 
-<!-- Main Dashboard Container -->
+<!-- Controls -->
 <main class="dashboard-main">
     <div class="container">
-
-        <!-- Control Panel -->
         <section class="control-panel" id="controlPanel">
-            <h2 class="section-title" style="text-align: center;">Filters & Controls</h2>
+            <h2 class="section-title">Filters & Controls</h2>
 
             <div class="control-grid">
-                <!-- Date Range Filter -->
-                <div class="control-group">
-                    <label for="dateRange">Date Range</label>
+                <!-- Date Range -->
+                <div class="control-group span-5">
+                    <label for="startDate">Date Range</label>
                     <div class="date-inputs">
                         <input aria-label="Start date" id="startDate" name="startDate" type="date">
-                        <span class="date-separator">to</span>
+                        <span aria-hidden="true" class="date-separator">to</span>
                         <input aria-label="End date" id="endDate" name="endDate" type="date">
                     </div>
                 </div>
 
-                <!-- Crime Type Filter -->
-                <div class="control-group">
+                <!-- Crime Type -->
+                <div class="control-group span-4">
                     <label for="crimeType">Crime Type</label>
                     <span class="helper-text">Select one or Ctrl+Click for multiple</span>
-                    <select aria-label="Select crime types" id="crimeType" multiple name="crimeType" size="2">
+                    <select aria-label="Select crime types" class="multi-select" id="crimeType" multiple name="crimeType" size="6">
                         <option selected value="all">All Crime Types</option>
                         <option value="violent">Violent Crimes</option>
                         <option value="sex">Sex Crimes</option>
                         <option value="property">Property Crimes</option>
                         <option value="fraud">Fraud / Financial Crimes</option>
-                        <option value="drug">Drug & Alcohol Offenses</option>
+                        <option value="drug">Drug &amp; Alcohol Offenses</option>
                         <option value="publicOrder">Public Order Crimes</option>
                         <option value="weapons">Weapons Offenses</option>
                         <option value="other">Special / Other Incidents</option>
                     </select>
                 </div>
 
-                <!-- ZIP Code Filter -->
-                <div class="control-group">
+                <!-- ZIP Code -->
+                <div class="control-group span-2">
                     <label for="zipCode">ZIP Code</label>
                     <select aria-label="Select ZIP code" id="zipCode" name="zipCode">
                         <option selected value="all">All ZIP Codes</option>
-                        <!-- ZIP codes will be populated dynamically -->
+                        <!-- populated dynamically -->
                     </select>
                 </div>
 
-                <!-- Reset Button -->
-                <div class="control-group">
-                    <button aria-label="Reset all filters" class="btn-reset" id="resetFilters">
-                        Reset Filters
-                    </button>
+                <!-- Reset -->
+                <div class="control-group span-1 align-end">
+                    <label class="sr-only" for="resetFilters">Reset</label>
+                    <button class="btn-reset" id="resetFilters" type="button">Reset Filters</button>
                 </div>
             </div>
         </section>
 
-        <!-- Visualization Grid -->
+        <!-- Panels -->
         <div class="visualization-grid">
-
-            <!-- Incident Crime Map -->
+            <!-- Incidents map -->
             <section class="viz-panel viz-panel-large" id="mapPanel">
                 <div class="panel-header">
                     <h2 class="panel-title">Incident Crime Map</h2>
                 </div>
                 <div class="panel-content">
-                    <div id="mapVisualization" style="height: 600px; width: 100%;"></div>
+                    <div id="mapVisualization"></div>
                     <div class="map-legend" id="mapLegend"></div>
                 </div>
             </section>
 
-            <!-- Homicides Crime Map -->
+            <!-- Homicides treemap -->
             <section class="viz-panel viz-panel-large" id="homicidesMapPanel">
                 <div class="panel-header">
-                    <h2 class="panel-title">Homicides by Patrol Division & Weapon Type</h2>
+                    <h2 class="panel-title">Homicides by Patrol Division &amp; Weapon Type</h2>
                 </div>
                 <div class="panel-content">
-                    <div id="homicidesTreemap" style="width: 100%; height: 625px;"></div>
+                    <div id="homicidesTreemap"></div>
                 </div>
             </section>
 
-            <!-- Violent Crimes Map -->
+            <!-- Violent crimes stacked area -->
             <section class="viz-panel viz-panel-large" id="violentMapPanel">
                 <div class="panel-header">
                     <h2 class="panel-title">Violent Crimes Over Time by Type</h2>
                 </div>
                 <div class="panel-content">
-                    <div id="violentStackedArea" style="width: 100%; height: 600px;"></div>
+                    <div id="violentStackedArea" style="width:100%; height:600px;"></div>
                 </div>
             </section>
 
-            <!-- Crime Trends Over Time -->
+            <!-- Trends -->
             <section class="viz-panel" id="trendPanel">
                 <div class="panel-header">
                     <h2 class="panel-title">Crime Trends Over Time</h2>
                 </div>
                 <div class="panel-content">
-                    <svg aria-label="Crime trend line chart" id="trendVisualization" role="img"></svg>
+                    <svg aria-label="Crime trend line chart" id="trendVisualization" role="img"
+                         style="width:100%; height:400px; display:block;"></svg>
                 </div>
             </section>
 
-            <!-- Crime Type Distribution -->
+            <!-- Distribution -->
             <section class="viz-panel" id="distributionPanel">
                 <div class="panel-header">
                     <h2 class="panel-title">Crime Type Distribution</h2>
                 </div>
                 <div class="panel-content">
-                    <svg aria-label="Crime type bar chart" id="distributionVisualization" role="img"></svg>
+                    <svg aria-label="Crime type bar chart" id="distributionVisualization" role="img"
+                         style="width:100%; height:500px; display:block;"></svg>
                 </div>
             </section>
         </div>
@@ -146,21 +144,92 @@
 <footer class="dashboard-footer">
     <div class="container">
         <p>&copy; Crime Lens of Charlotte</p>
-        <p>DATA 760: VISUALIZATION & COMMUNICATION</p>
+        <p>DATA 760: VISUALIZATION &amp; COMMUNICATION</p>
         <p>Creator: Mahek Patel</p>
     </div>
 </footer>
 
-<!-- Tooltip (for interactive elements) -->
+<!-- Tooltip -->
 <div aria-hidden="true" class="tooltip" id="tooltip" role="tooltip"></div>
 
-<!-- Loading Overlay -->
-<div class="loading-overlay" id="loadingOverlay">
+<!-- Loading -->
+<div class="loading-overlay hidden" id="loadingOverlay">
     <div class="loading-spinner"></div>
     <p class="loading-text">Loading crime data...</p>
 </div>
 
-<!-- D3 Visualization Script -->
+<!-- App JS -->
 <script src="visualization.js"></script>
+
+<!-- Basic wire-up for filters (safe even if JS is still loading) -->
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        if (window.Visualizations && Visualizations.initMaps) {
+            Visualizations.initMaps();
+        }
+        if (window.DataManager && DataManager.loadAllData) {
+            DataManager.loadAllData().then(() => {
+                // listeners
+                const start = document.getElementById('startDate');
+                const end = document.getElementById('endDate');
+                const types = document.getElementById('crimeType');
+                const zip = document.getElementById('zipCode');
+                const reset = document.getElementById('resetFilters');
+
+                function refresh() {
+                    if (window.DataManager && DataManager.applyFilters) {
+                        DataManager.applyFilters();
+                    }
+                    if (window.Visualizations && Visualizations.updateAll) {
+                        Visualizations.updateAll();
+                    }
+                }
+
+                start.addEventListener('change', e => {
+                    if (window.STATE) STATE.filters.startDate = new Date(e.target.value);
+                    refresh();
+                });
+
+                end.addEventListener('change', e => {
+                    if (window.STATE) STATE.filters.endDate = new Date(e.target.value);
+                    refresh();
+                });
+
+                types.addEventListener('change', () => {
+                    const selected = Array.from(types.selectedOptions).map(o => o.value);
+                    if (window.STATE) {
+                        STATE.filters.crimeTypes = (selected.length === 0 || selected.includes('all')) ? ['all'] : selected;
+                    }
+                    refresh();
+                });
+
+                zip.addEventListener('change', e => {
+                    if (window.STATE) STATE.filters.zipCode = e.target.value || 'all';
+                    refresh();
+                });
+
+                reset.addEventListener('click', () => {
+                    if (!window.STATE) return;
+                    // reset dates to full range
+                    const dates = (STATE.processedData.incidents || []).map(d => d.date).filter(Boolean);
+                    if (dates.length) {
+                        const min = new Date(Math.min(...dates));
+                        const max = new Date(Math.max(...dates));
+                        STATE.filters.startDate = min;
+                        STATE.filters.endDate = max;
+                        start.value = min.toISOString().slice(0, 10);
+                        end.value = max.toISOString().slice(0, 10);
+                    }
+                    // reset types + zip
+                    STATE.filters.crimeTypes = ['all'];
+                    Array.from(types.options).forEach(o => o.selected = (o.value === 'all'));
+                    STATE.filters.zipCode = 'all';
+                    zip.value = 'all';
+                    refresh();
+                });
+            });
+        }
+    });
+</script>
 </body>
 </html>

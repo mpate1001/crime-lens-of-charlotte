@@ -1,808 +1,429 @@
-/* Crime Lens of Charlotte
-   Stylesheet CSS File */
+/* ================================
+   Crime Lens of Charlotte — CSS
+   ================================ */
 
-/* CSS Variables - Charlotte Brand Colors */
+/* --- Theme --- */
 :root {
-    /* Primary Colors - Charlotte Greens */
-    --dark-charlotte-green: #24B24A;
-    --light-charlotte-green: #71BF44;
-
-    /* Secondary Colors */
-    --yellow: #FADD4A;
-    --orange: #EA9B3E;
-    --blue: #2F70B8;
-    --med-blue: #02508E;
-    --light-red: #E0685E;
-    --red: #DE0505;
-    --dark-red: #C70000;
-    --purple: #59489F;
+    --green-700: #24B24A;
+    --green-500: #71BF44;
+    --green-900: #007953;
+    --blue-600: #2F70B8;
+    --blue-800: #02508E;
     --navy: #0C1C35;
-    --dark-teal: #0A7D8C;
-    --light-teal: #00A79C;
-    --legacy-green: #007953;
+    --purple: #59489F;
+    --orange: #EA9B3E;
+    --yellow: #FADD4A;
+    --red: #DE0505;
+    --red-900: #C70000;
 
-    /* Neutral Colors */
-    --paper-white: #FFFFFF;
-    --text-black: #141E28;
-    --bg-light: #f8f9fa;
-    --bg-medium: #e9ecef;
-    --text-secondary: #6c757d;
-
-    /* Border & Shadow */
-    --border-color: #dee2e6;
-    --border-radius: 8px;
-    --box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    --box-shadow-hover: 0 4px 16px rgba(0, 0, 0, 0.15);
-
-    /* Spacing */
-    --spacing-xs: 4px;
-    --spacing-sm: 8px;
-    --spacing-md: 16px;
-    --spacing-lg: 24px;
-    --spacing-xl: 32px;
-
-    /* Typography - Proxima Nova */
-    --font-family: 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-size-base: 16px;
-    --font-size-sm: 14px;
-    --font-size-lg: 18px;
-    --font-size-xl: 24px;
-    --font-size-xxl: 32px;
-
-    /* Transitions */
-    --transition-fast: 0.15s ease;
-    --transition-base: 0.3s ease;
+    --bg: #ffffff;
+    --card: #f7f8fa;
+    --ink: #0f172a;
+    --muted: #6c757d;
+    --border: #e5e7eb;
+    --ring: #cbd5e1;
 }
 
-/* Proxima Nova Font Loading */
-@import url('https://use.typekit.net/af/949f99/00000000000000003b9b3068/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3');
-@import url('https://use.typekit.net/af/705e94/00000000000000003b9b3062/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3');
-
-@font-face {
-    font-family: 'Proxima Nova';
-    src: url('https://use.typekit.net/af/949f99/00000000000000003b9b3068/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3') format('woff2');
-    font-weight: 700;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Proxima Nova';
-    src: url('https://use.typekit.net/af/705e94/00000000000000003b9b3062/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3') format('woff2');
-    font-weight: 400;
-    font-style: normal;
-}
-
-/* Base Styles & Reset */
-
+/* --- Reset / base --- */
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    box-sizing: border-box
 }
 
-html {
-    font-size: var(--font-size-base);
-    scroll-behavior: smooth;
+html, body {
+    height: 100%
 }
 
 body {
-    font-family: var(--font-family);
-    line-height: 1.6;
-    color: var(--text-black);
-    background-color: var(--bg-light);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+    margin: 0;
+    font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+    color: var(--ink);
+    background: var(--bg);
 }
 
-/* Container */
+img {
+    max-width: 100%;
+    display: block
+}
+
+a {
+    color: inherit
+}
+
+.hidden {
+    display: none !important
+}
+
+/* --- Containers --- */
 .container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 var(--spacing-lg);
+    max-width: 1200px;
+    margin-inline: auto;
+    padding: 1rem;
 }
 
-/* Header */
-
+/* --- Header --- */
 .dashboard-header {
-    background: linear-gradient(135deg, var(--dark-charlotte-green) 0%, var(--legacy-green) 100%);
-    color: var(--paper-white);
-    padding: var(--spacing-xl) 0;
-    box-shadow: var(--box-shadow);
+    padding: 1.25rem 0 0.5rem;
+}
+
+.brand {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: .25rem;
 }
 
 .dashboard-title {
-    font-size: var(--font-size-xxl);
+    margin: 0.25rem 0 0;
+    text-align: center;
     font-weight: 700;
-    margin-bottom: var(--spacing-sm);
-    letter-spacing: -0.5px;
+    font-size: 1.75rem;
 }
 
 .dashboard-subtitle {
-    font-size: var(--font-size-lg);
-    font-weight: 400;
-    opacity: 0.95;
+    margin: 0.25rem 0 0.75rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: .95rem;
 }
 
-.dashboard-header .container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding-inline: var(--spacing-xl);
-}
-
-/* brand pinned to the left edge, vertically centered */
-.dashboard-header .brand {
-    position: absolute;
-    left: var(--spacing-xl);
-    top: 50%;
-    transform: translateY(-50%);
-    display: inline-flex;
-    align-items: center;
-    text-decoration: none;
-    color: inherit;
-}
-
-.dashboard-header .brand-logo {
-    height: 100px;
-    width: auto;
-    display: block;
-}
-
-@media (max-width: 600px) {
-    .dashboard-header .brand-logo {
-        height: 32px;
-    }
-
-    .dashboard-header .brand {
-        left: var(--spacing-lg);
-    }
-}
-
-/* Main Content */
-
-.dashboard-main {
-    flex: 1;
-    padding: var(--spacing-xl) 0;
-}
-
-.section-title {
-    font-size: var(--font-size-xl);
-    font-weight: 700;
-    color: var(--text-black);
-    margin-bottom: var(--spacing-lg);
-}
-
-/* Control Panel */
+/* --- Control panel --- */
 
 .control-panel {
-    background: var(--paper-white);
-    border-radius: var(--border-radius);
-    padding: var(--spacing-lg);
-    margin-bottom: var(--spacing-xl);
-    box-shadow: var(--box-shadow);
+    background: #f7f9fc;
+    border: 1px solid #e5ebf3;
+    border-radius: 16px;
+    padding: 28px;
+}
+
+.control-panel .section-title {
+    margin: 0 0 18px 0;
+    font-size: 28px;
+    line-height: 1.2;
 }
 
 .control-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: var(--spacing-lg);
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 22px 26px; /* row gap, column gap */
     align-items: end;
 }
 
-@media (max-width: 1200px) {
-    .control-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    .control-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
+/* Generic control group */
 .control-group {
     display: flex;
     flex-direction: column;
+    gap: 8px;
+    min-width: 0; /* prevent overflow */
 }
 
+/* Spans for desktop layout (12-col grid) */
+.span-5 {
+    grid-column: span 5;
+}
+
+.span-4 {
+    grid-column: span 4;
+}
+
+.span-2 {
+    grid-column: span 2;
+}
+
+.span-1 {
+    grid-column: span 1;
+}
+
+/* Labels & helper text */
 .control-group label {
-    font-size: var(--font-size-sm);
     font-weight: 700;
-    color: var(--text-black);
-    margin-bottom: var(--spacing-xs);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    color: #1f2a37;
 }
 
-.helper-text {
-    font-size: 11px;
-    color: var(--text-secondary);
-    font-style: italic;
-    margin-bottom: var(--spacing-xs);
-    display: block;
+.control-group .helper-text {
+    margin-top: -2px;
+    color: #8a94a6;
+    font-size: 0.95rem;
 }
 
-/* Form Inputs */
-.control-group input[type="date"],
-.control-group select {
+/* Inputs: full width, same height */
+.control-panel input[type="date"],
+.control-panel select:not(.multi-select),
+.control-panel button {
     width: 100%;
-    padding: var(--spacing-md);
-    border: 2px solid var(--border-color);
-    border-radius: var(--border-radius);
-    font-size: var(--font-size-base);
-    font-family: var(--font-family);
-    background-color: var(--paper-white);
-    color: var(--text-black);
-    transition: border-color var(--transition-fast);
+    height: 46px;
+    border: 1px solid #d7e0ea;
+    border-radius: 12px;
+    padding: 0 14px;
+    font-size: 16px;
+    background: #fff;
+    box-sizing: border-box;
 }
 
-.control-group input[type="date"]:focus,
-.control-group select:focus {
-    outline: none;
-    border-color: var(--dark-charlotte-green);
+/* Multiselect gets its own height + scroll */
+.control-panel .multi-select {
+    width: 100%;
+    min-height: 220px;
+    border: 1px solid #d7e0ea;
+    border-radius: 12px;
+    padding: 6px;
+    background: #fff;
+    overflow: auto;
 }
 
-.control-group select[multiple] {
-    min-height: 100px;
-}
-
+/* Date range row */
 .date-inputs {
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm);
+    gap: 12px;
 }
 
 .date-separator {
-    color: var(--text-secondary);
-    font-weight: 400;
+    color: #6b7280;
+    font-weight: 600;
 }
 
-/* Reset Button */
+/* Reset button sits on the baseline like other inputs */
+.align-end {
+    align-self: end;
+}
+
 .btn-reset {
-    width: 100%;
-    padding: var(--spacing-md);
-    background-color: var(--dark-charlotte-green);
-    color: var(--paper-white);
-    border: none;
-    border-radius: var(--border-radius);
-    font-size: var(--font-size-base);
-    font-weight: 700;
+    background: #ffffff;
+    border: 1px solid #cfd8e3;
+    border-radius: 12px;
+    height: 46px;
+    font-weight: 600;
     cursor: pointer;
-    transition: all var(--transition-base);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
 .btn-reset:hover {
-    background-color: var(--legacy-green);
-    transform: translateY(-2px);
-    box-shadow: var(--box-shadow-hover);
+    background: #f3f6fb;
 }
 
-.btn-reset:active {
-    transform: translateY(0);
-}
-
-/* Visualization Grid */
-
-.visualization-grid {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: var(--spacing-lg);
-    margin-bottom: var(--spacing-xl);
-}
-
-.viz-panel {
-    background: var(--paper-white);
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    overflow: hidden;
-    transition: box-shadow var(--transition-base);
-}
-
-.viz-panel:hover {
-    box-shadow: var(--box-shadow-hover);
-}
-
-/* Panel Sizes - All maps and charts full width */
-.viz-panel-large,
-#mapPanel,
-#homicidesMapPanel,
-#violentMapPanel,
-#trendPanel,
-#distributionPanel,
-#statsPanel {
-    grid-column: span 12;
-}
-
-/* Panel Header */
-.panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--spacing-lg);
-    background-color: var(--bg-light);
-    border-bottom: 2px solid var(--border-color);
-}
-
-.panel-title {
-    font-size: var(--font-size-lg);
-    font-weight: 700;
-    color: var(--text-black);
-}
-
-/* Panel Content */
-.panel-content {
-    padding: 0;
-    position: relative;
-    overflow: visible;
-}
-
-/* All map panels need consistent styling */
-#mapPanel .panel-content,
-#violentMapPanel .panel-content {
-    padding: 0;
-    height: 600px;
-}
-
-/* Treemap panel needs different styling */
-#homicidesMapPanel .panel-content {
-    padding: var(--spacing-md);
-    height: 625px;
-}
-
-/* SVG Containers */
-svg {
-    width: 100%;
-    height: 100%;
-    display: block;
-}
-
-/* All map visualizations */
-#mapVisualization,
-#violentMapVisualization {
-    height: 600px !important;
-    width: 100% !important;
-    position: relative;
-    background-color: #f0f0f0;
-    z-index: 1;
-}
-
-/* Leaflet map specific styles */
-.leaflet-container {
-    font-family: var(--font-family);
-    height: 100% !important;
-    width: 100% !important;
-    z-index: 1;
-    background: transparent !important;
-}
-
-.leaflet-pane {
-    z-index: auto;
-}
-
-.leaflet-tile-pane {
-    z-index: 1 !important;
-}
-
-.leaflet-tile-pane img {
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-.leaflet-tile {
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-.leaflet-overlay-pane {
-    z-index: 2 !important;
-}
-
-.leaflet-popup-content-wrapper {
-    border-radius: var(--border-radius);
-}
-
-/* Chart heights */
-#trendVisualization {
-    min-height: 400px;
-}
-
-#distributionVisualization {
-    min-height: 500px;
-}
-
-/* Map Legend */
-.map-legend {
-    position: absolute;
-    bottom: var(--spacing-lg);
-    left: var(--spacing-lg);
-    background: rgba(255, 255, 255, 0.95);
-    padding: var(--spacing-md);
-    border-radius: var(--border-radius);
-    box-shadow: var(--box-shadow);
-    font-size: var(--font-size-sm);
-    border: 2px solid var(--dark-charlotte-green);
-    z-index: 1000;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: var(--spacing-sm);
-}
-
-.legend-color {
-    width: 20px;
-    height: 20px;
-    border-radius: 3px;
-    margin-right: var(--spacing-sm);
-}
-
-.legend-label {
-    color: var(--text-black);
-    font-weight: 400;
-}
-
-/* Treemap Styles */
-#homicidesTreemap {
-    width: 100%;
-    height: 625px;
-    background: var(--bg-light);
-}
-
-.treemap-cell {
-    cursor: pointer;
-    transition: opacity 0.2s ease;
-}
-
-.treemap-cell:hover {
-    opacity: 0.8;
-    stroke: var(--dark-charlotte-green);
-    stroke-width: 3px;
-}
-
-.treemap-label {
-    font-family: var(--font-family);
-    font-size: 12px;
-    font-weight: 600;
-    fill: white;
-    text-anchor: middle;
-    pointer-events: none;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-.treemap-sublabel {
-    font-family: var(--font-family);
-    font-size: 10px;
-    fill: white;
-    text-anchor: middle;
-    pointer-events: none;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-.treemap-legend {
-    font-family: var(--font-family);
-}
-
-.treemap-legend text {
-    fill: var(--text-black);
-}
-
-/* Layout: two-column grid for About This Data */
-.info-panel .info-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: var(--spacing-lg) var(--spacing-xl);
-}
-
-.info-panel .data-grid {
-    display: grid;
-    grid-template-columns: 1fr 360px;
-    gap: var(--spacing-lg) var(--spacing-xl);
-    align-items: start;
-}
-
-/* Stack columns on smaller screens */
-@media (max-width: 900px) {
-    .info-panel .data-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Keep paragraph width readable */
-.info-panel .data-copy p {
-    max-width: 70ch;
-    margin-bottom: var(--spacing-sm);
-}
-
-/* Dataset links styling */
-.dataset-list .link-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 0.4rem;
-}
-
-.dataset-list .link-list li {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-/* Subtle bullet using legacy green */
-.dataset-list .link-list li::before {
-    content: "";
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    background: var(--legacy-green);
-    flex: 0 0 0.5rem;
-}
-
-.dataset-list a {
-    font-weight: 700;
-    text-decoration: none;
-}
-
-.dataset-list a:hover {
-    text-decoration: underline;
-}
-
-.data-timestamp {
-    font-size: var(--font-size-lg);
-    padding-top: var(--spacing-md);
-    grid-column: 1 / -1;
-    margin-top: var(--spacing-sm);
-    color: var(--text-secondary);
-    text-align: right;
-}
-
-/* Footer */
-
-.dashboard-footer {
-    background-color: var(--navy);
-    color: var(--paper-white);
-    text-align: center;
-    padding: var(--spacing-lg);
-    margin-top: auto;
-}
-
-.dashboard-footer p {
-    margin-bottom: var(--spacing-sm);
-    opacity: 0.9;
-}
-
-.dashboard-footer p:last-child {
-    margin-bottom: 0;
-    font-size: var(--font-size-sm);
-    opacity: 0.7;
-}
-
-/* Tooltip */
-
-.tooltip {
-    position: absolute;
-    background: rgba(20, 30, 40, 0.95);
-    color: var(--paper-white);
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--border-radius);
-    font-size: var(--font-size-sm);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity var(--transition-fast);
-    z-index: 1000;
-    max-width: 300px;
-    border: 2px solid var(--dark-charlotte-green);
-}
-
-.tooltip[aria-hidden="false"] {
-    opacity: 1;
-}
-
-/* Loading Overlay */
-
-.loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.95);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    transition: opacity var(--transition-base);
-}
-
-.loading-overlay.hidden {
-    opacity: 0;
-    pointer-events: none;
-}
-
-.loading-spinner {
-    width: 60px;
-    height: 60px;
-    border: 4px solid var(--border-color);
-    border-top-color: var(--dark-charlotte-green);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.loading-text {
-    margin-top: var(--spacing-lg);
-    font-size: var(--font-size-lg);
-    font-weight: 700;
-    color: var(--text-black);
-}
-
-/* D3 Visualization Styles */
-
-/* Map Styles */
-.zip-boundary {
-    transition: fill var(--transition-fast);
-    cursor: pointer;
-}
-
-/* Crime Points */
-.crime-point {
-    fill: var(--dark-red);
-    opacity: 0.6;
-    transition: all var(--transition-fast);
-}
-
-.crime-point:hover {
-    opacity: 1;
-    r: 6px;
-}
-
-.crime-point.violent {
-    fill: var(--red);
-}
-
-.crime-point.property {
-    fill: var(--orange);
-}
-
-.crime-point.drug {
-    fill: var(--purple);
-}
-
-.crime-point.other {
-    fill: var(--blue);
-}
-
-/* Chart Axes */
-.axis path,
-.axis line {
-    stroke: var(--border-color);
-    shape-rendering: crispEdges;
-}
-
-.axis text {
-    fill: var(--text-black);
-    font-size: var(--font-size-sm);
-    font-family: var(--font-family);
-}
-
-/* Grid Lines */
-.grid line {
-    stroke: var(--border-color);
-    stroke-opacity: 0.3;
-    shape-rendering: crispEdges;
-}
-
-/* Bars */
-.bar {
-    fill: var(--dark-charlotte-green);
-    transition: fill var(--transition-fast);
-}
-
-.bar:hover {
-    fill: var(--legacy-green);
-}
-
-.bar.violent {
-    fill: var(--red);
-}
-
-.bar.property {
-    fill: var(--orange);
-}
-
-.bar.drug {
-    fill: var(--purple);
-}
-
-.bar.other {
-    fill: var(--blue);
-}
-
-/* Lines */
-.line {
-    fill: none;
-    stroke: var(--dark-charlotte-green);
-    stroke-width: 3px;
-}
-
-.line-area {
-    fill: var(--light-charlotte-green);
-    opacity: 0.2;
-}
-
-/* Responsive Design */
-
-@media (max-width: 1024px) {
-    #mapPanel,
-    #homicidesMapPanel,
-    #violentMapPanel,
-    #trendPanel,
-    #distributionPanel {
-        grid-column: span 12;
-    }
-
+/* Responsive tweaks */
+@media (max-width: 1200px) {
     .control-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(8, 1fr);
+    }
+
+    .span-5 {
+        grid-column: span 5;
+    }
+
+    .span-4 {
+        grid-column: span 4;
+    }
+
+    .span-2 {
+        grid-column: span 3;
+    }
+
+    .span-1 {
+        grid-column: span 3;
     }
 }
 
-@media (max-width: 768px) {
-    :root {
-        --font-size-xxl: 28px;
-        --font-size-xl: 20px;
-    }
-
-    .container {
-        padding: 0 var(--spacing-md);
-    }
-
-    .dashboard-header {
-        padding: var(--spacing-lg) 0;
-    }
-
+@media (max-width: 860px) {
     .control-grid {
         grid-template-columns: 1fr;
+    }
+
+    .span-1, .span-2, .span-4, .span-5 {
+        grid-column: 1 / -1;
     }
 
     .date-inputs {
         flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
     }
 
     .date-separator {
         display: none;
     }
+}
 
-    #mapVisualization,
-    #violentMapVisualization {
-        min-height: 400px;
-    }
+/* --- Grid of visualization panels --- */
+.visualization-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns:1fr;
+}
 
-    #trendVisualization,
-    #distributionVisualization {
-        min-height: 300px;
+@media (min-width: 980px) {
+    .visualization-grid {
+        grid-template-columns:1fr 1fr;
     }
 }
 
-@media (max-width: 480px) {
-    :root {
-        --spacing-lg: 16px;
-        --spacing-xl: 24px;
-    }
+/* Panels */
+.viz-panel {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+}
 
-    .stats-grid {
-        grid-template-columns: 1fr;
+.viz-panel-large {
+    grid-column: 1 / -1;
+}
+
+/* span full width on larger screens */
+
+.panel-header {
+    padding: .75rem 1rem;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, #fafcff, #f6f7fb);
+}
+
+.panel-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.panel-content {
+    padding: .75rem;
+}
+
+/* --- Map & legends --- */
+#mapVisualization {
+    height: 600px;
+    width: 100%;
+}
+
+#homicidesTreemap {
+    width: 100%;
+    height: 625px;
+}
+
+#violentStackedArea {
+    width: 100%;
+    height: 600px;
+}
+
+.map-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem 1rem;
+    margin-top: .5rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .9rem;
+}
+
+.legend-color {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    border: 1px solid #fff;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, .1) inset;
+}
+
+.legend-label {
+    user-select: none
+}
+
+/* Optional: shrink Leaflet controls a bit */
+.leaflet-control-zoom a {
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    font-size: 18px;
+}
+
+/* --- Tooltip --- */
+.tooltip {
+    position: absolute;
+    pointer-events: none;
+    background: #111827;
+    color: #fff;
+    padding: .5rem .6rem;
+    font-size: .85rem;
+    border-radius: .5rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .18);
+    transform: translate(-50%, -120%);
+    z-index: 9999;
+}
+
+/* --- Loading overlay --- */
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, .7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 9998;
+}
+
+.loading-spinner {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 4px solid #e5e7eb;
+    border-top-color: var(--green-700);
+    animation: spin .9s linear infinite;
+    margin-bottom: .5rem;
+}
+
+.loading-text {
+    color: #111827;
+    font-weight: 600;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg)
     }
+}
+
+/* --- D3 chart basics --- */
+.axis path, .axis line {
+    stroke: #cbd5e1;
+}
+
+.grid line {
+    stroke: #e5e7eb;
+}
+
+.line {
+    fill: none;
+    stroke: var(--green-700);
+    stroke-width: 2.2px;
+}
+
+.line-area {
+    fill: rgba(36, 178, 74, .15);
+}
+
+/* Treemap labels */
+.treemap-label {
+    fill: #111827;
+    font-weight: 700;
+    font-size: 12px;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    pointer-events: none;
+}
+
+.treemap-sublabel {
+    fill: #374151;
+    font-size: 11px;
+    text-anchor: middle;
+    dominant-baseline: middle;
+    pointer-events: none;
+}
+
+/* Small aesthetics for section spacing */
+.dashboard-footer {
+    text-align: center;
+    color: var(--muted);
+    padding: 1rem 0 2rem;
+    font-size: .9rem;
 }
