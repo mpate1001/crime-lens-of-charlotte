@@ -1458,7 +1458,48 @@ function wireControls() {
         });
 }
 
+// Human-friendly labels + display order for the guide
+const CRIME_CATEGORY_LABELS = {
+    violent: 'Violent Crimes',
+    sex: 'Sex Crimes',
+    property: 'Property Crimes',
+    fraud: 'Fraud / Financial Crimes',
+    drug: 'Drug & Alcohol Offenses',
+    publicOrder: 'Public Order Crimes',
+    weapons: 'Weapons Offenses',
+    other: 'Special / Other Incidents'
+};
+const CRIME_CATEGORY_ORDER = [
+    'violent', 'sex', 'property', 'fraud', 'drug', 'publicOrder', 'weapons', 'other'
+];
+
+// Renders the "What’s in each crime type?" cards using CONFIG.crimeCategories
+function renderCrimeTypeGuide() {
+    const host = document.getElementById('crimeTypeGrid');
+    if (!host) return;
+
+    host.innerHTML = ''; // reset
+
+    CRIME_CATEGORY_ORDER.forEach(key => {
+        const items = CONFIG.crimeCategories[key] || [];
+        const color = Utils.getCrimeColor(key);
+        const title = CRIME_CATEGORY_LABELS[key] || key;
+
+        const card = document.createElement('div');
+        card.className = 'ct-card';
+
+        card.innerHTML = `
+      <h4><span class="ct-dot" style="background:${color}"></span>${title}</h4>
+      <ul class="ct-list">
+        ${items.map(it => `<li>${it}</li>`).join('')}
+      </ul>
+    `;
+        host.appendChild(card);
+    });
+}
+
 window.addEventListener('DOMContentLoaded', async () => {
+    renderCrimeTypeGuide();
     Visualizations.initMaps();
     wireControls();
     await DataManager.loadAllData();

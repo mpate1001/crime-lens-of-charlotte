@@ -1,6 +1,4 @@
-/* ================================
-   Crime Lens of Charlotte — CSS
-   ================================ */
+/* Crime Lens of Charlotte — CSS */
 
 /* --- Theme --- */
 :root {
@@ -15,7 +13,6 @@
     --yellow: #FADD4A;
     --red: #DE0505;
     --red-900: #C70000;
-
     --bg: #ffffff;
     --card: #f7f8fa;
     --ink: #0f172a;
@@ -57,37 +54,36 @@ a {
 .container {
     max-width: 1200px;
     margin-inline: auto;
-    padding: 1rem;
+    padding: 1rem
 }
 
 /* --- Header --- */
 .dashboard-header {
-    padding: 1.25rem 0 0.5rem;
+    padding: 1.25rem 0 .5rem
 }
 
 .brand {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: .25rem;
+    margin-bottom: .25rem
 }
 
 .dashboard-title {
-    margin: 0.25rem 0 0;
+    margin: .25rem 0 0;
     text-align: center;
     font-weight: 700;
-    font-size: 1.75rem;
+    font-size: 1.75rem
 }
 
 .dashboard-subtitle {
-    margin: 0.25rem 0 0.75rem;
+    margin: .25rem 0 .75rem;
     text-align: center;
     color: var(--muted);
-    font-size: .95rem;
+    font-size: .95rem
 }
 
 /* --- Control panel --- */
-
 .control-panel {
     background: #f7f9fc;
     border: 1px solid #e5ebf3;
@@ -96,15 +92,15 @@ a {
 }
 
 .control-panel .section-title {
-    margin: 0 0 18px 0;
+    margin: 0 0 18px;
     font-size: 28px;
-    line-height: 1.2;
+    line-height: 1.2
 }
 
 .control-grid {
     display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    gap: 22px 26px; /* row gap, column gap */
+    grid-template-columns:repeat(12, minmax(0, 1fr));
+    gap: 22px 26px;
     align-items: end;
 }
 
@@ -113,36 +109,36 @@ a {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    min-width: 0; /* prevent overflow */
+    min-width: 0
 }
 
 /* Spans for desktop layout (12-col grid) */
 .span-5 {
-    grid-column: span 5;
+    grid-column: span 5
 }
 
 .span-4 {
-    grid-column: span 4;
+    grid-column: span 4
 }
 
 .span-2 {
-    grid-column: span 2;
+    grid-column: span 2
 }
 
 .span-1 {
-    grid-column: span 1;
+    grid-column: span 1
 }
 
 /* Labels & helper text */
 .control-group label {
     font-weight: 700;
-    color: #1f2a37;
+    color: #1f2a37
 }
 
 .control-group .helper-text {
     margin-top: -2px;
     color: #8a94a6;
-    font-size: 0.95rem;
+    font-size: .95rem
 }
 
 /* Inputs: full width, same height */
@@ -156,39 +152,49 @@ a {
     padding: 0 14px;
     font-size: 16px;
     background: #fff;
-    box-sizing: border-box;
 }
 
-/* Multiselect gets its own height + scroll */
+/* Focus ring for all controls */
+.control-panel input[type="date"]:focus-visible,
+.control-panel select:focus-visible,
+.control-panel button:focus-visible {
+    outline: none;
+    border-color: var(--green-700);
+    box-shadow: 0 0 0 3px rgba(36, 178, 74, .15);
+}
+
+/* Multiselect — smaller, scrollable, user-resizable */
 .control-panel .multi-select {
     width: 100%;
-    min-height: 220px;
+    min-height: 140px; /* ↓ smaller than before */
+    max-height: 220px; /* caps the size */
     border: 1px solid #d7e0ea;
     border-radius: 12px;
     padding: 6px;
     background: #fff;
     overflow: auto;
+    resize: vertical;
 }
 
 /* Date range row */
 .date-inputs {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 12px
 }
 
 .date-separator {
     color: #6b7280;
-    font-weight: 600;
+    font-weight: 600
 }
 
 /* Reset button sits on the baseline like other inputs */
 .align-end {
-    align-self: end;
+    align-self: end
 }
 
 .btn-reset {
-    background: #ffffff;
+    background: #fff;
     border: 1px solid #cfd8e3;
     border-radius: 12px;
     height: 46px;
@@ -197,49 +203,45 @@ a {
 }
 
 .btn-reset:hover {
-    background: #f3f6fb;
+    background: #f3f6fb
 }
 
 /* Responsive tweaks */
 @media (max-width: 1200px) {
     .control-grid {
-        grid-template-columns: repeat(8, 1fr);
+        grid-template-columns:repeat(8, 1fr)
     }
 
     .span-5 {
-        grid-column: span 5;
+        grid-column: span 5
     }
 
     .span-4 {
-        grid-column: span 4;
+        grid-column: span 4
     }
 
-    .span-2 {
-        grid-column: span 3;
-    }
-
-    .span-1 {
-        grid-column: span 3;
+    .span-2, .span-1 {
+        grid-column: span 3
     }
 }
 
 @media (max-width: 860px) {
     .control-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns:1fr
     }
 
     .span-1, .span-2, .span-4, .span-5 {
-        grid-column: 1 / -1;
+        grid-column: 1 / -1
     }
 
     .date-inputs {
         flex-direction: column;
         align-items: stretch;
-        gap: 10px;
+        gap: 10px
     }
 
     .date-separator {
-        display: none;
+        display: none
     }
 }
 
@@ -247,12 +249,12 @@ a {
 .visualization-grid {
     display: grid;
     gap: 1rem;
-    grid-template-columns:1fr;
+    grid-template-columns:1fr
 }
 
 @media (min-width: 980px) {
     .visualization-grid {
-        grid-template-columns:1fr 1fr;
+        grid-template-columns:1fr 1fr
     }
 }
 
@@ -262,13 +264,12 @@ a {
     border: 1px solid var(--border);
     border-radius: 14px;
     overflow: hidden;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, .04);
 }
 
 .viz-panel-large {
-    grid-column: 1 / -1;
+    grid-column: 1 / -1
 }
-
-/* span full width on larger screens */
 
 .panel-header {
     padding: .75rem 1rem;
@@ -279,29 +280,55 @@ a {
 .panel-title {
     margin: 0;
     font-size: 1rem;
-    font-weight: 700;
+    font-weight: 700
 }
 
 .panel-content {
-    padding: .75rem;
+    padding: .75rem
 }
 
 /* --- Map & legends --- */
 #mapVisualization {
     height: 600px;
-    width: 100%;
+    width: 100%
 }
 
 #homicidesTreemap {
     width: 100%;
-    height: 625px;
+    height: 625px
 }
 
 #violentStackedArea {
     width: 100%;
-    height: 600px;
+    height: 600px
 }
 
+@media (max-width: 860px) {
+    #mapVisualization {
+        height: 460px
+    }
+
+    #homicidesTreemap {
+        height: 520px
+    }
+
+    #violentStackedArea {
+        height: 520px
+    }
+}
+
+.leaflet-container {
+    border-radius: 12px
+}
+
+.leaflet-control-zoom a {
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    font-size: 18px
+}
+
+/* Legend */
 .map-legend {
     display: flex;
     flex-wrap: wrap;
@@ -313,7 +340,7 @@ a {
     display: flex;
     align-items: center;
     gap: .5rem;
-    font-size: .9rem;
+    font-size: .9rem
 }
 
 .legend-color {
@@ -326,14 +353,6 @@ a {
 
 .legend-label {
     user-select: none
-}
-
-/* Optional: shrink Leaflet controls a bit */
-.leaflet-control-zoom a {
-    width: 28px;
-    height: 28px;
-    line-height: 28px;
-    font-size: 18px;
 }
 
 /* --- Tooltip --- */
@@ -374,7 +393,7 @@ a {
 
 .loading-text {
     color: #111827;
-    font-weight: 600;
+    font-weight: 600
 }
 
 @keyframes spin {
@@ -385,21 +404,21 @@ a {
 
 /* --- D3 chart basics --- */
 .axis path, .axis line {
-    stroke: #cbd5e1;
+    stroke: #cbd5e1
 }
 
 .grid line {
-    stroke: #e5e7eb;
+    stroke: #e5e7eb
 }
 
 .line {
     fill: none;
     stroke: var(--green-700);
-    stroke-width: 2.2px;
+    stroke-width: 2.2px
 }
 
 .line-area {
-    fill: rgba(36, 178, 74, .15);
+    fill: rgba(36, 178, 74, .15)
 }
 
 /* Treemap labels */
@@ -425,5 +444,70 @@ a {
     text-align: center;
     color: var(--muted);
     padding: 1rem 0 2rem;
-    font-size: .9rem;
+    font-size: .9rem
+}
+
+/* --- Crime Type Guide --- */
+#crimeTypeGuide {
+    margin: 16px 0 24px
+}
+
+/* added bottom space before map */
+
+.ct-grid {
+    display: grid;
+    grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+.ct-card {
+    background: #fff;
+    border: 1px solid rgba(15, 23, 42, .08);
+    border-radius: 14px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, .04);
+}
+
+.ct-card h4 {
+    margin: 0 0 8px;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px
+}
+
+.ct-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, .12);
+    flex: 0 0 10px
+}
+
+.ct-list {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 13px;
+    line-height: 1.45;
+    max-height: 170px;
+    overflow: auto;
+}
+
+/* nicer thin scrollbar for lists (supported browsers) */
+.ct-list::-webkit-scrollbar {
+    width: 8px
+}
+
+.ct-list::-webkit-scrollbar-thumb {
+    background: #d7dee8;
+    border-radius: 8px
+}
+
+.ct-list {
+    scrollbar-width: thin;
+    scrollbar-color: #d7dee8 transparent
+}
+
+.ct-list li {
+    margin: 2px 0
 }

@@ -52,7 +52,8 @@
                 <div class="control-group span-4">
                     <label for="crimeType">Crime Type</label>
                     <span class="helper-text">Select one or Ctrl+Click for multiple</span>
-                    <select aria-label="Select crime types" class="multi-select" id="crimeType" multiple name="crimeType" size="6">
+                    <select aria-label="Select crime types" class="multi-select" id="crimeType" multiple
+                            name="crimeType" size="6">
                         <option selected value="all">All Crime Types</option>
                         <option value="violent">Violent Crimes</option>
                         <option value="sex">Sex Crimes</option>
@@ -81,7 +82,13 @@
                 </div>
             </div>
         </section>
-
+        <section class="card" id="crimeTypeGuide">
+            <div class="card-header">
+                <h2 class="card-title">What’s in each crime type?</h2>
+                <p class="card-subtitle">These groups follow NIBRS-style categories used by CMPD.</p>
+            </div>
+            <div aria-live="polite" class="ct-grid" id="crimeTypeGrid"></div>
+        </section>
         <!-- Panels -->
         <div class="visualization-grid">
             <!-- Incidents map -->
