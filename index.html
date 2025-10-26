@@ -51,7 +51,7 @@
         <section class="control-panel">
             <h2 class="section-title">Filters & Controls</h2>
             <div class="control-grid">
-                <div class="control-group span-5">
+                <div class="control-group span-6">
                     <label for="startDate">Date Range</label>
                     <div class="date-inputs">
                         <input id="startDate" name="startDate" type="date"/>
@@ -59,10 +59,10 @@
                         <input id="endDate" name="endDate" type="date"/>
                     </div>
                 </div>
-                <div class="control-group span-4">
+                <div class="control-group span-5">
                     <label for="crimeType">Crime Type</label>
                     <span class="helper-text">Select one or Ctrl+Click for multiple</span>
-                    <select id="crimeType" multiple name="crimeType" size="6">
+                    <select id="crimeType" multiple name="crimeType" size="9">
                         <option selected value="all">All Crime Types</option>
                         <option value="violent">Violent Crimes</option>
                         <option value="sex">Sex Crimes</option>
@@ -72,12 +72,6 @@
                         <option value="publicOrder">Public Order Crimes</option>
                         <option value="weapons">Weapons Offenses</option>
                         <option value="other">Special / Other Incidents</option>
-                    </select>
-                </div>
-                <div class="control-group span-2">
-                    <label for="zipCode">ZIP Code</label>
-                    <select id="zipCode" name="zipCode">
-                        <option selected value="all">All ZIP Codes</option>
                     </select>
                 </div>
                 <div class="control-group span-1 align-end">
@@ -97,43 +91,27 @@
 
         <!-- VISUALIZATIONS -->
         <div class="visualization-grid">
-            <section class="viz-panel viz-panel-large">
+            <section class="viz-panel viz-panel-full">
                 <h2 class="panel-title">Incident Crime Map</h2>
                 <div id="mapVisualization"></div>
                 <div class="map-legend" id="mapLegend"></div>
             </section>
 
-            <section class="viz-panel viz-panel-large">
-                <h2 class="panel-title">Homicides by Patrol Division & Weapon Type</h2>
-                <div id="homicidesTreemap"></div>
-            </section>
-
-            <section class="viz-panel viz-panel-large">
-                <h2 class="panel-title">Violent Crimes Over Time by Type</h2>
-                <div id="violentStackedArea" style="width:100%; height:600px;"></div>
-            </section>
-
-            <section class="viz-panel">
-                <h2 class="panel-title">Crime Trends Over Time</h2>
-                <svg id="trendVisualization" style="width:100%; height:400px; display:block;"></svg>
-            </section>
-
-            <section class="viz-panel">
-                <h2 class="panel-title">Crime Type Distribution</h2>
-                <svg id="distributionVisualization" style="width:100%; height:500px; display:block;"></svg>
+            <section class="viz-panel viz-panel-full">
+                <h2 class="panel-title">Top Crime Hotspots by ZIP Code</h2>
+                <p class="panel-subtitle">Click on a bar to filter and zoom to that ZIP code</p>
+                <svg id="zipHotspots" style="width:100%; height:750px; display:block;"></svg>
             </section>
         </div>
     </div>
 </main>
-
 <!-- Tooltip + Loader -->
 <div aria-hidden="true" class="tooltip" id="tooltip" role="tooltip"></div>
 <div class="loading-overlay hidden" id="loadingOverlay">
     <div class="loading-spinner"></div>
     <p class="loading-text">Loading crime data...</p>
 </div>
-
-<!-- MAIN SCRIPT (loads after Leaflet/D3 because of defer) -->
+<!-- MAIN SCRIPT -->
 <script defer src="visualization.js"></script>
 </body>
 </html>
