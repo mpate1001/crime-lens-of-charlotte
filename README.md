@@ -86,11 +86,11 @@ REST APIs:
 
 ## Technologies Used
 
-- **D3.js** (v7) - Data visualization and DOM manipulation
-- **Leaflet** (v1.9.4) - Interactive mapping library
-- **HTML5/CSS3** - Structure and styling
-- **JavaScript (ES6+)** - Application logic
-- **GeoJSON** - Geographic data format
+- **D3.js**
+- **Leaflet**
+- **HTML5/CSS3**
+- **JavaScript (ES6+)**
+- **GeoJSON**
 
 ## Installation & Setup
 
@@ -103,7 +103,7 @@ REST APIs:
 
 This is a static web application with no build process. You need a local web server to run it:
 
-#### Option 1: Python (Recommended)
+#### Python
 
 ```bash
 # Navigate to the project directory
@@ -177,14 +177,3 @@ The dashboard categorizes crimes into 8 NIBRS-based groups:
 - **Public Order Crimes** (Green): Disorderly conduct, trespassing, gambling
 - **Weapons Offenses** (Dark Red): Weapon law violations
 - **Special / Other Incidents** (Light Blue): Missing persons, non-criminal incidents
-
-### Browser Compatibility
-
-Tested on:
-
-- Chrome 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
-
-Requires support for ES6+, Fetch API, CSS Grid, and Flexbox.
