@@ -101,6 +101,8 @@ REST APIs:
 
 ### Running the Project
 
+### [Click here to access](https://mpate1001.github.io/crime-lens-of-charlotte/)
+
 This is a static web application with no build process. You need a local web server to run it:
 
 #### Python
