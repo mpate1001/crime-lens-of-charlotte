@@ -1,11 +1,11 @@
-# Charlotte Crime Data Visualization - Technical Explanation
+# Charlotte Crime Data Visualization
 
 ## Project Overview
 This project visualizes crime incident data for Charlotte, NC using an interactive map and bar chart. The data comes from Charlotte-Mecklenburg Police Department (CMPD) and shows different crime categories across ZIP codes.
 
 ---
 
-## 🗺️ MAP GENERATION
+## MAP
 
 ### Step 1: Map Initialization (Lines 297-334)
 
@@ -163,7 +163,7 @@ map.addLayer(markers);
 
 ---
 
-## 📊 BAR CHART GENERATION
+## BAR Chart
 
 ### Step 1: Data Aggregation (Lines 571-593)
 
@@ -396,7 +396,7 @@ legendItems.append('text')
 
 ---
 
-## 🎨 KEY CONCEPTS TO UNDERSTAND
+## KEY CONCEPTS TO UNDERSTAND
 
 ### 1. GeoJSON
 - Standard format for geographic data
@@ -426,45 +426,13 @@ legendItems.append('text')
 
 ---
 
-## 📚 Libraries Used
+## Libraries Used
 
 1. **Leaflet.js** - Interactive maps
 2. **D3.js** - Data-driven visualizations  
 3. **Leaflet.markercluster** - Groups nearby markers for performance
 4. **OpenStreetMap** - Free map tiles
 
----
 
-## 🎯 Key Takeaways for Students
-
-**Map Generation:**
-- Base layer (OpenStreetMap tiles) + data layers (boundaries, points)
-- Choropleth coloring shows density
-- Clustering improves performance with many points
-
-**Bar Chart Generation:**
-- Aggregation: Count incidents by ZIP and category
-- Scales: Map data → pixels
-- Stack layout: Create segmented bars
-- Interactivity: Tooltips and filters
-
-**Best Practices:**
-- Fetch data once, cache for performance
-- Filter data efficiently before rendering
-- Use appropriate scales for data types
-- Add interactivity for exploration
-- Optimize with clustering and bounding boxes
-
----
-
-## 💡 Tips for Explaining to Students
-
-1. **Start with the big picture**: Show the final result first
-2. **Break down the pipeline**: Data → Processing → Visualization
-3. **Use analogies**: Scales are like rulers that convert data to pixels
-4. **Show incremental builds**: Start with basic map, add features one by one
-5. **Live code small examples**: Create simple bar chart before complex stacked one
-6. **Emphasize data structures**: How data is organized affects visualization
-7. **Discuss tradeoffs**: Clustering vs. all points, performance vs. detail
 
 Good luck with your presentation!
