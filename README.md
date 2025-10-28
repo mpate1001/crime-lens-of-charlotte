@@ -3,6 +3,8 @@
 **Author:** Mahek Patel  
 **Course:** DATA 760 - VISUALIZATION & COMMUNICATION
 
+---
+
 ## Project Overview
 
 Crime Lens of Charlotte is an interactive data visualization dashboard that explores crime patterns and trends in
@@ -13,8 +15,9 @@ The dashboard leverages real-time data from the Charlotte Open Data Portal to cr
 safety incidents, featuring interactive maps, dynamic filtering, and visual analytics that help users discover insights
 about crime in Charlotte-Mecklenburg.
 
-## Features
+---
 
+## Features
 ### Interactive Visualizations
 
 1. **Incident Crime Map**
@@ -37,7 +40,6 @@ about crime in Charlotte-Mecklenburg.
     - Color-coded to match visualizations
 
 ### Filtering & Interactivity
-
 - **Date Range Filter**: Select custom time periods to analyze temporal patterns
 - **Crime Type Filter**: Multi-select dropdown to focus on specific crime categories
 - **ZIP Code Filtering**: Click map boundaries or chart bars to drill down by location
@@ -46,7 +48,6 @@ about crime in Charlotte-Mecklenburg.
 - **Synchronized Views**: All filters update all visualizations simultaneously
 
 ### Technical Features
-
 - **Spatial Join Analysis**: Accurate ZIP code assignment using point-in-polygon algorithms with bounding box
   optimization
 - **Real-time Data**: Fetches live data from Charlotte Open Data Portal APIs
@@ -56,57 +57,51 @@ about crime in Charlotte-Mecklenburg.
 - **Accessible**: Keyboard navigation and ARIA labels for screen readers
 
 ### Design & Development References
+1. [**Design Resources for Developers** - Brad Traversy](https://github.com/bradtraversy/design-resources-for-developers?tab=readme-ov-file#html--css-templates)
+HTML/CSS templates and design inspiration
+2. [**Charlotte Identity Guide v3.1** - City of Charlotte](https://www.charlottenc.gov/files/sharedassets/city/v/1/city-government/departments/documents/charlotte-identity-guide-v-3-1.pdf)
+Official brand guidelines for color palette and typography
+3. [**The D3 Graph Gallery** - Yan Holtz](https://d3-graph-gallery.com/index.html)
+D3.js visualization examples and code patterns
+4. [**ObservableHQ** - Mike Bostock](https://observablehq.com/@d3/gallery)
+D3 gallery examples
+5. [**How to Make API Calls in JavaScript** - freeCodeCamp](https://www.freecodecamp.org/news/make-api-calls-in-javascript/)
+Guide for making API calls using Fetch API
 
-1. **Design Resources for Developers** - Brad Traversy  
-   https://github.com/bradtraversy/design-resources-for-developers?tab=readme-ov-file#html--css-templates  
-   HTML/CSS templates and design inspiration
-
-2. **Charlotte Identity Guide v3.1** - City of Charlotte  
-   https://www.charlottenc.gov/files/sharedassets/city/v/1/city-government/departments/documents/charlotte-identity-guide-v-3-1.pdf  
-   Official brand guidelines for color palette and typography
-
-3. **The D3 Graph Gallery** - Yan Holtz  
-   https://d3-graph-gallery.com/index.html  
-   D3.js visualization examples and code patterns
+---
 
 ## Data Sources
-
 All datasets are fetched in real-time from the [Charlotte Open Data Portal](https://data.charlottenc.gov/) via ArcGIS
 REST APIs:
 
-1. **CMPD Incidents** (Primary Dataset)
-   https://data.charlottenc.gov/datasets/charlotte::cmpd-incidents-1/about
-   Complete incident reports including all criminal and non-criminal offenses reported to Charlotte-Mecklenburg Police
-   Department. Data includes offense type, date/time, location coordinates, and NIBRS classification codes.
+1. **CMPD Incidents** - [(Primary Dataset)](https://data.charlottenc.gov/datasets/charlotte::cmpd-incidents-1/about)  
+Complete incident reports including all criminal and non-criminal offenses reported to Charlotte-Mecklenburg Police
+Department. Data includes offense type, date/time, location coordinates, and NIBRS classification codes.
 
-2. **ZIP Codes (Geographic Boundaries)**
-   https://data.charlottenc.gov/datasets/charlotte::zip-codes/about
-   GeoJSON polygon features representing Charlotte-Mecklenburg ZIP code boundaries. Used for spatial joins to assign ZIP
-   codes to incidents and for interactive map overlays.
+2. **ZIP Codes** - [(Geographic Boundaries)**](https://data.charlottenc.gov/datasets/charlotte::zip-codes/about)  
+GeoJSON polygon features representing Charlotte-Mecklenburg ZIP code boundaries. Used for spatial joins to assign ZIP
+codes to incidents and for interactive map overlays.
 
 ## Technologies Used
-
 - **D3.js**
 - **Leaflet**
-- **HTML5/CSS3**
-- **JavaScript (ES6+)**
+- **HTML/CSS**
+- **JavaScript**
 - **GeoJSON**
 
+---
+
 ## Installation & Setup
-
 ### Prerequisites
-
 - Modern web browser (Chrome, Firefox, Safari, or Edge)
 - Local web server
 
 ### Running the Project
-
-### [Click here to access](https://mpate1001.github.io/crime-lens-of-charlotte/)
+### [Click here to access without downloading](https://mpate1001.github.io/crime-lens-of-charlotte/)
 
 This is a static web application with no build process. You need a local web server to run it:
 
 #### Python
-
 ```bash
 # Navigate to the project directory
 cd crime-lens-of-charlotte
@@ -114,13 +109,10 @@ cd crime-lens-of-charlotte
 # Python 3
 python3 -m http.server 8000
 ```
-
 Then open your browser and navigate to `http://localhost:8000`
 
 ### What to Expect
-
 Once the application loads:
-
 - The dashboard will fetch crime data from Charlotte Open Data Portal APIs
 - Initial load may take a few seconds depending on your connection and dataset size
 - Two main visualizations will populate automatically:
@@ -131,10 +123,10 @@ Once the application loads:
 - Click on map elements (ZIP boundaries or crime markers) to filter interactively
 - Click on bars in the hotspots chart to zoom and filter by ZIP code
 
+---
+
 ## How to Use the Dashboard
-
 ### Exploring the Map
-
 1. **View Crime Incidents**: Each colored circle represents a crime incident, color-coded by category
 2. **Hover over ZIP boundaries**: See the ZIP code and total incident count
 3. **Click ZIP boundaries**: Filter all visualizations to that ZIP code and zoom to its bounds
@@ -143,7 +135,6 @@ Once the application loads:
 6. **Pan and Zoom**: Use mouse/trackpad to navigate the map
 
 ### Using Filters
-
 1. **Date Range**:
     - Use the date pickers to select start and end dates
     - Default range shows all available data
@@ -159,18 +150,14 @@ Once the application loads:
     - Deselects any ZIP code or category filters
 
 ### Interacting with Charts
-
 **Top Crime Hotspots Chart:**
-
 - Horizontal bars show crime breakdown by category for top 15 ZIP codes
 - Hover over bar segments to see category details
 - Click any bar to filter and zoom to that ZIP code on the map
 - Stacked segments use same colors as crime type categories
 
 ### Understanding Crime Categories
-
 The dashboard categorizes crimes into 8 NIBRS-based groups:
-
 - **Violent Crimes** (Red): Murder, assault, robbery, kidnapping
 - **Sex Crimes** (Purple): Sexual assault, human trafficking, prostitution
 - **Property Crimes** (Orange): Burglary, theft, vandalism, arson
