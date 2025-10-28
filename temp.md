@@ -5,7 +5,7 @@ This project visualizes crime incident data for Charlotte, NC using an interacti
 
 ---
 
-## MAP
+## MAP Chart
 
 ### Step 1: Map Initialization
 
