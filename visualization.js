@@ -395,7 +395,7 @@ function initializeMap() {
     });
 
     L.tileLayer('https://maps.geoapify.com/v1/tile/osm-bright-smooth/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        attribution: '&copy; <a href="https://maps.geoapify.com">Geoapify</a> contributors',
         maxZoom: MAP_MAX_ZOOM,
         minZoom: MAP_MIN_ZOOM
     }).addTo(map);
