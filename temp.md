@@ -7,7 +7,7 @@ This project visualizes crime incident data for Charlotte, NC using an interacti
 
 ## MAP
 
-### Step 1: Map Initialization (Lines 297-334)
+### Step 1: Map Initialization
 
 **What happens:**
 - Creates a Leaflet map centered on Charlotte (coordinates: 35.2271, -80.8431)
@@ -63,7 +63,7 @@ async function loadAllData() {
 }
 ```
 
-**Bounding Box Calculation (Lines 187-205):**
+**Bounding Box Calculation:**
 - Finds the minimum and maximum X (longitude) and Y (latitude) coordinates
 - Creates a rectangular box around each ZIP code for faster point-in-polygon checks
 
@@ -110,7 +110,7 @@ const zipLayer = L.geoJSON(zipGeoJSON, {
 - Color changes based on crime category filter
 - Opacity scales from 0.2 (low) to 0.7 (high)
 
-### Step 4: Adding Crime Point Markers (Lines 467-545)
+### Step 4: Adding Crime Point Markers
 
 **What happens:**
 - Places a circle marker for each crime incident
@@ -165,7 +165,7 @@ map.addLayer(markers);
 
 ## BAR Chart
 
-### Step 1: Data Aggregation (Lines 571-593)
+### Step 1: Data Aggregation
 
 **What happens:**
 - Counts incidents by ZIP code and crime category
@@ -205,7 +205,7 @@ function updateZipHotspotsChart() {
 }
 ```
 
-### Step 2: D3.js Chart Setup (Lines 594-615)
+### Step 2: D3.js Chart Setup
 
 **What happens:**
 - Creates an SVG canvas for the chart
@@ -296,7 +296,7 @@ barGroups.selectAll('rect')
 - d[0] = start position, d[1] = end position
 - Width = difference between start and end
 
-### Step 5: Adding Interactivity (Lines 660-684)
+### Step 5: Adding Interactivity
 
 **What happens:**
 - Hover shows tooltip with details
@@ -329,7 +329,7 @@ barGroups.selectAll('rect')
     });
 ```
 
-### Step 6: Adding Legend (Lines 698-726)
+### Step 6: Adding Legend
 
 **What happens:**
 - Creates color-coded legend below the chart
@@ -362,37 +362,6 @@ legendItems.append('text')
     .attr('y', 7)
     .text(d => CATEGORY_LABELS[d]);
 ```
-
----
-
-## 🔄 DATA FLOW
-
-### Complete Pipeline:
-
-1. **Fetch Data** (Lines 336-382)
-   - Load crime incidents from CMPD API
-   - Load ZIP code boundaries from county GIS
-
-2. **Process Data** (Lines 221-295)
-   - Categorize each crime by type
-   - Assign each incident to a ZIP code using point-in-polygon
-   - Parse dates from various formats
-
-3. **Apply Filters** (Lines 384-398)
-   - Filter by date range
-   - Filter by crime type
-   - Filter by ZIP code
-
-4. **Update Visualizations** (Lines 728-731)
-   - Redraw map with filtered points
-   - Recalculate and redraw bar chart
-   - Update statistics
-
-5. **Handle Interactions**
-   - User hovers → show tooltip
-   - User clicks bar → filter map and zoom
-   - User clicks map → show popup
-   - User changes filters → reprocess data
 
 ---
 
@@ -432,7 +401,3 @@ legendItems.append('text')
 2. **D3.js** - Data-driven visualizations  
 3. **Leaflet.markercluster** - Groups nearby markers for performance
 4. **OpenStreetMap** - Free map tiles
-
-
-
-Good luck with your presentation!
