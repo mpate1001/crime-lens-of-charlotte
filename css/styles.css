@@ -38,21 +38,21 @@ a {
 
 /* --- Containers --- */
 .container {
-    max-width: 95%;
+    max-width: 98%;
     width: 100%;
     margin-inline: auto;
-    padding: 1.5rem;
+    padding: 1rem;
 }
 
 @media (min-width: 1400px) {
     .container {
-        max-width: 1400px;
+        max-width: 1800px;
     }
 }
 
 @media (min-width: 1800px) {
     .container {
-        max-width: 1600px;
+        max-width: 2000px;
     }
 }
 
@@ -122,6 +122,10 @@ a {
 
 .span-4 {
     grid-column: span 4;
+}
+
+.span-3 {
+    grid-column: span 3;
 }
 
 .span-2 {
@@ -227,6 +231,10 @@ a {
         grid-column: span 4;
     }
 
+    .span-3 {
+        grid-column: span 3;
+    }
+
     .span-2, .span-1 {
         grid-column: span 2;
     }
@@ -237,7 +245,7 @@ a {
         grid-template-columns: 1fr;
     }
 
-    .span-1, .span-2, .span-4, .span-5, .span-6 {
+    .span-1, .span-2, .span-3, .span-4, .span-5, .span-6 {
         grid-column: 1 / -1;
     }
 
@@ -252,6 +260,45 @@ a {
     }
 }
 
+/* --- Tabs --- */
+.tabs-nav {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.tab-btn {
+    background: none;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #6b7280;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+    position: relative;
+    bottom: -2px;
+}
+
+.tab-btn:hover {
+    color: #24B24A;
+}
+
+.tab-btn.active {
+    color: #24B24A;
+    border-bottom-color: #24B24A;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
 /* --- Visualization grid --- */
 .visualization-grid {
     display: grid;
@@ -262,10 +309,9 @@ a {
 /* Panels */
 .viz-panel {
     background: #fff;
-    border: 1px solid var(--border);
-    border-radius: 14px;
+    border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 1px 2px rgba(16, 24, 40, .04);
+    padding: 1.5rem;
 }
 
 .viz-panel-full {
@@ -289,14 +335,27 @@ a {
 }
 
 /* --- Map & charts sizing --- */
-#mapVisualization {
-    height: 650px;
+.map-container {
+    display: flex;
+    gap: 1rem;
+    position: relative;
     width: 100%;
 }
 
+#mapVisualization {
+    height: calc(100vh - 250px);
+    min-height: 700px;
+    flex: 1;
+}
+
 @media (max-width: 860px) {
+    .map-container {
+        flex-direction: column;
+    }
+
     #mapVisualization {
         height: 500px;
+        min-height: 500px;
     }
 }
 
@@ -397,65 +456,203 @@ a {
     stroke: #e5e7eb;
 }
 
-/* --- Crime Type Guide --- */
-#crimeTypeGuide {
-    margin: 16px 0 24px;
+/* --- Crime Type Legend (Left Sidebar) --- */
+.crime-type-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 180px;
 }
 
-.ct-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 16px;
-}
-
-.ct-card {
+.crime-category-card {
     background: #fff;
-    border: 1px solid rgba(15, 23, 42, .08);
-    border-radius: 14px;
-    padding: 14px 16px;
-    box-shadow: 0 1px 2px rgba(16, 24, 40, .04);
+    border: 2px solid rgba(15, 23, 42, .08);
+    border-radius: 8px;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    overflow: hidden;
 }
 
-.ct-card h4 {
-    margin: 0 0 8px;
-    font-size: 15px;
+.crime-category-card:hover {
+    transform: translateX(4px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-color: #24B24A;
+}
+
+.category-color-bar {
+    height: 4px;
+    width: 100%;
+}
+
+.category-header {
+    padding: 0.75rem 1rem;
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
 }
 
-.ct-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    border: 1px solid rgba(0, 0, 0, .12);
-    flex: 0 0 10px;
-}
-
-.ct-list {
+.category-title {
     margin: 0;
-    padding-left: 18px;
-    font-size: 13px;
-    line-height: 1.45;
-    max-height: 170px;
-    overflow: auto;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #0f172a;
+    text-align: center;
+    line-height: 1.2;
 }
 
-/* thin scrollbar */
-.ct-list::-webkit-scrollbar {
-    width: 8px;
+@media (max-width: 860px) {
+    .crime-type-legend {
+        flex-direction: row;
+        flex-wrap: wrap;
+        min-width: auto;
+    }
+
+    .crime-category-card {
+        flex: 1 1 calc(50% - 0.25rem);
+    }
 }
 
-.ct-list::-webkit-scrollbar-thumb {
-    background: #d7dee8;
+/* --- Metrics Tab --- */
+.metrics-header {
+    margin: 0 0 0.5rem;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.metrics-intro {
+    margin: 0 0 2rem;
+    font-size: 1.1rem;
+    color: #6b7280;
+}
+
+.metric-section {
+    background: #fff;
     border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
 }
 
-.ct-list {
-    scrollbar-width: thin;
-    scrollbar-color: #d7dee8 transparent;
+.metric-header {
+    margin-bottom: 1.5rem;
 }
 
-.ct-list li {
-    margin: 2px 0;
+.metric-title {
+    margin: 0 0 0.5rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #0f172a;
+    text-align: center;
+}
+
+.metric-description {
+    margin: 0;
+    font-size: 1rem;
+    color: #6b7280;
+}
+
+.metric-viz-container {
+    min-height: 300px;
+}
+
+.metric-viz-container svg {
+    display: block;
+    margin: 0 auto;
+}
+
+.placeholder-viz {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    background: #f7f9fc;
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    color: #6b7280;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* --- Crime Type Modal/Tooltip --- */
+.crime-modal {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    left: 200px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.crime-modal-content {
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    width: 320px;
+    max-height: 500px;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    border: 2px solid #24B24A;
+    animation: slideIn 0.2s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.modal-close {
+    color: #9ca3af;
+    float: right;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.modal-close:hover,
+.modal-close:focus {
+    color: #374151;
+}
+
+.crime-modal-title {
+    margin: 0 0 1rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    clear: both;
+}
+
+.crime-modal-list {
+    margin: 0;
+    padding-left: 1.25rem;
+    list-style: disc;
+}
+
+.crime-modal-list li {
+    margin: 0.4rem 0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #374151;
+}
+
+@media (max-width: 860px) {
+    .crime-modal {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .crime-modal-content {
+        width: 90%;
+        max-width: 400px;
+    }
 }
