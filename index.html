@@ -5,8 +5,6 @@
     <meta content="width=device-width, initial-scale=1" name="viewport"/>
     <meta content="Interactive crime visualization dashboard for Charlotte, NC" name="description"/>
     <title>Crime Lens of Charlotte</title>
-
-    <!-- Leaflet (hosted with SRI & CORS) -->
     <link
             crossorigin=""
             href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -19,15 +17,9 @@
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
             src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
     ></script>
-
-    <!-- D3 -->
     <script defer src="https://d3js.org/d3.v7.min.js"></script>
-
-    <!-- Favicon + Styles -->
     <link href="favicon/favicon.ico" rel="icon" sizes="any"/>
-    <link href="styles.css" rel="stylesheet"/>
-
-    <!-- Optional: fallback height if your CSS doesn't set one -->
+    <link href="css/styles.css" rel="stylesheet"/>
     <style>
         #mapVisualization {
             min-height: 480px;
@@ -44,14 +36,26 @@
         <p class="dashboard-subtitle">Exploring Crime in Charlotte</p>
     </div>
 </header>
-
 <main class="dashboard-main">
     <div class="container">
-        <!-- FILTER PANEL -->
-        <section class="control-panel">
-            <h2 class="section-title">Filters & Controls</h2>
+        <!-- TAB NAVIGATION -->
+        <div class="tabs-nav">
+            <button class="tab-btn active" data-tab="crimeMap">Crime Map</button>
+            <button class="tab-btn" data-tab="metrics">Metrics</button>
+        </div>
+
+        <!-- TAB CONTENT: CRIME MAP -->
+        <div id="crimeMapTab" class="tab-content active">
+            <!-- FILTER PANEL -->
+            <section class="control-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 class="section-title" style="margin: 0;">Filters & Controls</h2>
+                <div id="totalCount" style="font-size: 1.1rem; font-weight: 600; color: #24B24A;">
+                    Total Incidents: <span id="incidentCount">0</span>
+                </div>
+            </div>
             <div class="control-grid">
-                <div class="control-group span-6">
+                <div class="control-group span-4">
                     <label for="startDate">Date Range</label>
                     <div class="date-inputs">
                         <input id="startDate" name="startDate" type="date"/>
@@ -59,7 +63,14 @@
                         <input id="endDate" name="endDate" type="date"/>
                     </div>
                 </div>
-                <div class="control-group span-5">
+                <div class="control-group span-3">
+                    <label for="zipCode">ZIP Code</label>
+                    <span class="helper-text">Filter by location</span>
+                    <select id="zipCode" name="zipCode">
+                        <option selected value="all">All ZIP Codes</option>
+                    </select>
+                </div>
+                <div class="control-group span-4">
                     <label for="crimeType">Crime Type</label>
                     <span class="helper-text">Select one or Ctrl+Click for multiple</span>
                     <select id="crimeType" multiple name="crimeType" size="9">
@@ -79,39 +90,61 @@
                 </div>
             </div>
         </section>
-
-        <!-- CRIME CATEGORY REFERENCE -->
-        <section class="card" id="crimeTypeGuide">
-            <div class="card-header">
-                <h2 class="card-title">What’s in each crime type?</h2>
-                <p class="card-subtitle">These groups follow NIBRS-style categories used by CMPD.</p>
-            </div>
-            <div class="ct-grid" id="crimeTypeGrid"></div>
-        </section>
-
-        <!-- VISUALIZATIONS -->
+        <!-- Visuals -->
         <div class="visualization-grid">
             <section class="viz-panel viz-panel-full">
                 <h2 class="panel-title">Incident Crime Map</h2>
-                <div id="mapVisualization"></div>
+                <div class="map-container">
+                    <!-- Crime Type Legend (Left Side) -->
+                    <div class="crime-type-legend" id="crimeTypeGrid"></div>
+
+                    <!-- Map -->
+                    <div id="mapVisualization"></div>
+
+                    <!-- Modal for Crime Details -->
+                    <div id="crimeModal" class="crime-modal">
+                        <div class="crime-modal-content">
+                            <span class="modal-close">&times;</span>
+                            <h3 id="modalCrimeTitle" class="crime-modal-title"></h3>
+                            <ul id="modalCrimeList" class="crime-modal-list"></ul>
+                        </div>
+                    </div>
+                </div>
                 <div class="map-legend" id="mapLegend"></div>
             </section>
-
-            <section class="viz-panel viz-panel-full">
-                <h2 class="panel-title">Top Crime Hotspots by ZIP Code</h2>
-                <p class="panel-subtitle">Click on a bar to filter and zoom to that ZIP code</p>
-                <svg id="zipHotspots" style="width:100%; height:750px; display:block;"></svg>
+        </div>
+        </div>
+        <!-- END CRIME MAP TAB -->
+        <!-- METRICS TAB -->
+        <div id="metricsTab" class="tab-content">
+            <h2 class="metrics-header">Crime Metrics & Insights</h2>
+            <p class="metrics-intro">Explore detailed crime statistics and answer key questions about crime patterns in Charlotte.</p>
+            <!-- Crime Type Distribution -->
+            <section class="metric-section">
+                <div class="metric-header">
+                    <h3 class="metric-title">Crime Hotspots</h3>
+                </div>
+                <div class="metric-viz-container" id="metricCrimeTypes">
+                </div>
+            </section>
+            <!-- Top Crime Hotspots by ZIP Code -->
+            <section class="metric-section">
+                <div class="metric-header">
+                    <h3 class="metric-title">Top Crime Hotspots by ZIP Code</h3>
+                </div>
+                <div class="metric-viz-container">
+                    <svg id="zipHotspots" style="width:100%; height:750px; display:block;"></svg>
+                </div>
             </section>
         </div>
     </div>
 </main>
-<!-- Tooltip + Loader -->
+<!-- Tooltips -->
 <div aria-hidden="true" class="tooltip" id="tooltip" role="tooltip"></div>
 <div class="loading-overlay hidden" id="loadingOverlay">
     <div class="loading-spinner"></div>
     <p class="loading-text">Loading crime data...</p>
 </div>
-<!-- MAIN SCRIPT -->
-<script defer src="visualization.js"></script>
+<script src="js/main.js" type="module"></script>
 </body>
 </html>

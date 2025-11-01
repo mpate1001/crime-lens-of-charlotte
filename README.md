@@ -50,7 +50,7 @@ about crime in Charlotte-Mecklenburg.
 ### Technical Features
 - **Spatial Join Analysis**: Accurate ZIP code assignment using point-in-polygon algorithms with bounding box
   optimization
-- **Real-time Data**: Fetches live data from Charlotte Open Data Portal APIs
+- **Local Data Storage**: Uses CSV files instead of live APIs to ensure data availability during government shutdowns
 - **Client-side Caching**: Efficient data loading with in-memory caching
 - **Responsive Design**: Mobile-friendly layout with breakpoints for tablet and desktop
 - **Performance Optimized**: Viewport-based rendering for thousands of crime markers
@@ -71,35 +71,65 @@ Guide for making API calls using Fetch API
 ---
 
 ## Data Sources
-All datasets are fetched in real-time from the [Charlotte Open Data Portal](https://data.charlottenc.gov/) via ArcGIS
-REST APIs:
 
-1. **CMPD Incidents** - [(Primary Dataset)](https://data.charlottenc.gov/datasets/charlotte::cmpd-incidents-1/about)  
-Complete incident reports including all criminal and non-criminal offenses reported to Charlotte-Mecklenburg Police
-Department. Data includes offense type, date/time, location coordinates, and NIBRS classification codes.
+**Important Note**: This application now uses **local CSV data files** stored in the `data/` directory instead of live API calls. This ensures the application remains functional during government shutdowns or API outages.
 
-2. **ZIP Codes** - [(Geographic Boundaries)**](https://data.charlottenc.gov/datasets/charlotte::zip-codes/about)  
-GeoJSON polygon features representing Charlotte-Mecklenburg ZIP code boundaries. Used for spatial joins to assign ZIP
-codes to incidents and for interactive map overlays.
+### Current Data Files
+
+1. **data/incidents.csv** - CMPD crime incidents (5,000 records)
+   - Contains coordinates, dates, crime types, addresses, and patrol divisions
+   - Originally from: [Charlotte Open Data Portal - CMPD Incidents](https://data.charlottenc.gov/datasets/charlotte::cmpd-incidents-1/about)
+
+2. **data/zipcodes.csv** - ZIP code boundaries (43 ZIP codes)
+   - Contains ZIP codes and polygon geometries for Mecklenburg County
+   - Originally from: Mecklenburg County GIS Services
+
+### Updating Data
+
+To refresh data from the APIs when they're available:
+```bash
+python3 fetch_data.py
+```
+This will download the latest data and save it to the `data/` directory.
 
 ## Technologies Used
-- **D3.js**
-- **Leaflet**
-- **HTML/CSS**
-- **JavaScript**
-- **GeoJSON**
+- **D3.js** - Data visualizations and charts
+- **Leaflet** - Interactive maps
+- **HTML/CSS** - Page layout and styling
+- **JavaScript** - Application logic
+- **GeoJSON** - Geographic data format
 
 ---
 
-## Installation & Setup
-### Prerequisites
-- Modern web browser (Chrome, Firefox, Safari, or Edge)
-- Local web server
+## Project Structure
 
+```
+crime-lens-of-charlotte/
+├── index.html              # Main page with all the visualizations
+├── styles.css              # All the styling
+├── data/
+│   ├── incidents.csv       # Crime incident data (5,000 records)
+│   └── zipcodes.csv        # ZIP code boundaries (43 ZIPs)
+├── js/
+│   ├── main.js             # Kicks everything off
+│   ├── config.js           # Settings and constants
+│   ├── state.js            # Stores all the data
+│   ├── utils.js            # Helper functions
+│   ├── dataLoad.js         # Loads CSV files
+│   ├── dataProcessor.js    # Cleans up the data
+│   ├── spatial.js          # ZIP code calculations
+│   ├── filters.js          # Filter logic
+│   ├── ui.js               # Connects buttons and dropdowns
+│   ├── mapVisuals.js       # Leaflet map
+│   └── barChart.js         # D3 bar chart
+└── fetch_data.py           # Script to update data from APIs
+```
+
+---
+
+## Setup
 ### Running the Project
 ### [Click here to access without downloading](https://mpate1001.github.io/crime-lens-of-charlotte/)
-
-This is a static web application with no build process. You need a local web server to run it:
 
 #### Python
 ```bash
