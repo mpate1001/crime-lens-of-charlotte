@@ -28,13 +28,27 @@ about crime in Charlotte-Mecklenburg.
     - Dynamic marker sizing based on zoom level
     - Color-coded by crime type (violent, property, drug, etc.)
 
-2. **Top Crime Hotspots by ZIP Code**
+2. **Temporal Crime Trends**
+    - Multi-line chart showing crime trends from 2017-2023
+    - Separate color-coded line for each crime category
+    - Monthly aggregation showing patterns over time
+    - Interactive legend with hover-to-highlight functionality
+    - Tooltips showing exact counts for each data point
+    - Helps identify seasonal patterns, spikes, and long-term trends
+
+3. **Top Crime Hotspots by ZIP Code**
     - Horizontal stacked bar chart showing top 15 ZIP codes by incident count
     - Each bar displays crime breakdown by category
     - Click bars to filter and zoom to that ZIP code on the map
     - Real-time updates based on active filters
 
-3. **Crime Type Reference Guide**
+4. **Crime Type Treemap**
+    - Zoomable hierarchical treemap visualization
+    - Click to drill down from crime categories to specific offense types
+    - Size represents incident frequency
+    - Interactive exploration of crime type distribution
+
+5. **Crime Type Reference Guide**
     - Comprehensive breakdown of all crime categories
     - Shows specific NIBRS offense codes within each category
     - Color-coded to match visualizations
@@ -84,14 +98,6 @@ Guide for making API calls using Fetch API
    - Contains ZIP codes and polygon geometries for Mecklenburg County
    - Originally from: Mecklenburg County GIS Services
 
-### Updating Data
-
-To refresh data from the APIs when they're available:
-```bash
-python3 fetch_data.py
-```
-This will download the latest data and save it to the `data/` directory.
-
 ## Technologies Used
 - **D3.js** - Data visualizations and charts
 - **Leaflet** - Interactive maps
@@ -120,9 +126,13 @@ crime-lens-of-charlotte/
 │   ├── spatial.js          # ZIP code calculations
 │   ├── filters.js          # Filter logic
 │   ├── ui.js               # Connects buttons and dropdowns
+│   ├── tabs.js             # Tab navigation
 │   ├── mapVisuals.js       # Leaflet map
-│   └── barChart.js         # D3 bar chart
-└── fetch_data.py           # Script to update data from APIs
+│   ├── temporal.js         # Animated temporal visualization
+│   ├── barChart.js         # D3 bar chart
+│   └── treemap.js          # D3 treemap
+└── css/
+    └── styles.css          # All styling and animations
 ```
 
 ---
@@ -143,15 +153,17 @@ Then open your browser and navigate to `http://localhost:8000`
 
 ### What to Expect
 Once the application loads:
-- The dashboard will fetch crime data from Charlotte Open Data Portal APIs
-- Initial load may take a few seconds depending on your connection and dataset size
-- Two main visualizations will populate automatically:
-    - Interactive crime map with ZIP code boundaries
-    - Top 15 crime hotspots by ZIP code (stacked bar chart)
+- The dashboard will load crime data from local CSV files (5,000 incidents, 2017-2023)
+- Initial load may take a few seconds depending on dataset size
+- Three main tabs will be available:
+    1. **Crime Map**: Interactive Leaflet map with ZIP code boundaries and filterable crime markers
+    2. **Temporal Crime**: Line chart showing crime trends over time by category (2017-2023)
+    3. **Metrics**: Crime hotspots by ZIP code (stacked bar chart) and zoomable treemap
 - Crime type reference guide displays all 8 crime categories
 - Use the filter controls to explore different time periods and crime types
 - Click on map elements (ZIP boundaries or crime markers) to filter interactively
 - Click on bars in the hotspots chart to zoom and filter by ZIP code
+- Use the temporal animation to visualize how crime evolved over 6 years
 
 ---
 
@@ -179,12 +191,31 @@ Once the application loads:
     - Returns to default date range and "All Crime Types"
     - Deselects any ZIP code or category filters
 
+### Using the Temporal Crime Trends
+1. **Navigate to the Temporal Crime tab** (middle tab in the navigation)
+2. **View the multi-line chart** showing monthly crime counts from 2017-2023
+3. **Interact with the legend**:
+   - Hover over any crime category in the legend to highlight that line
+   - Other lines will fade to make the selected category stand out
+4. **Hover over data points** to see exact counts for that month and category
+5. **Look for patterns**:
+   - Identify which crime categories are most common
+   - Spot seasonal trends (e.g., spikes in certain months)
+   - Notice long-term increases or decreases
+   - Compare different crime categories over the same time period
+
 ### Interacting with Charts
 **Top Crime Hotspots Chart:**
 - Horizontal bars show crime breakdown by category for top 15 ZIP codes
 - Hover over bar segments to see category details
 - Click any bar to filter and zoom to that ZIP code on the map
 - Stacked segments use same colors as crime type categories
+
+**Crime Type Treemap:**
+- Click any category box to zoom in and see specific offense types
+- Click the breadcrumb at the top to zoom back out
+- Size of each box represents the number of incidents
+- Hover to see exact counts
 
 ### Understanding Crime Categories
 The dashboard categorizes crimes into 8 NIBRS-based groups:

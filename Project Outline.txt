@@ -1,0 +1,100 @@
+Assignment: Course Project (35%)
+
+For your course project, use the skills you've developed in this class to tackle a new problem. For
+example, you could develop a visualization for a complex dataset, construct a physicalization, visualize
+an algorithmic process, or run an experiment to explore graphical perception. There are not many
+restrictions on this one, other than it should demonstrate your mastery of the processes and ideas we
+talked about in class. Be creative and have fun!
+You are welcome to work on this project as an individual or in a small group. I recommend keeping
+groups between 2–4 members.
+This project has several moving pieces to ensure you have sufficient feedback throughout the process.
+You will create a project proposal to outline the plan of work (Week 4). From there, you will have two
+checkpoints where you will present your progress to the class for feedback (Weeks 7 and 12). In Week
+13, you will present your final projects as well as submitting a write-up, group post-mortem, and any
+accompanying artifacts.
+Instructions for each element of the project are as follows:
+Proposal: In order to make sure you have a sufficiently concrete plan for your final project, you will
+submit a minimum 1-page proposal as a PDF on Canvas outlining your project vision. This proposal
+should include the following elements (please include each as a separate section in your proposal):
+● Team members (you only need to submit one proposal per team)
+● Objectives and motivating problem (what problem do you plan to solve?)
+● Rough plan of work with approximate milestones (how will you solve that problem?)
+● Deliverables (what will you generate at the end of the project?)
+The instructor will provide you with guiding feedback for your project and a set of expectations based
+on this proposal. Please note that the goal here is to get feedback and define expectations for the
+project. If you choose to update your project topic, you are welcome to do so, but please submit a new
+proposal asap as an email to your instructor to make sure that you have concrete expectations for the
+new topic.
+Checkpoint Presentations: You will present your progress on your course project to the class in a 2–3
+minute lightning talk. Each presentation should briefly summarize your target problem, progress so far
+(with visuals if possible), current challenges, and your goals for the next checkpoint/milestone.
+Deliverables: You will be graded on both the artifacts you generate as part of this project and a project
+write-up. As stated above, expectations for the artifacts and write-up will be provided as feedback for
+your proposal. Deliverables should be structured as follows:
+Write-Up: You should approach the write-up like a research paper. It should contain the following
+sections:
+● A 1-paragraph abstract that summarizes your motivating problem, what you did, and what
+you found
+● An introduction that describes the motivating problem and why it's interesting or important
+● A related work section that summarizes research related to your project (minimum eight
+citations)
+● A detailed description of your project and justifications for any design elements
+● A discussion of what you found
+The write-up should be submitted as a PDF with a minimum of four pages (including figures and
+references) using the IEEE VIS Paper Format: https://tc.computer.org/vgtc/publications/journal/
+Artifacts: Please upload all deliverables as a zip file in Canvas. This includes any code, data, and
+documentation. If you have physical artifacts, please either reach out to the instructor to set up an
+appointment to present your artifacts or submit an explanatory video and/or set of photographs. Note
+that if your data is too large to submit or includes confidential information, you may work with the
+instructor to set up an alternative submission.
+Project Presentation: You will give a 5-minute presentation of your project followed by a brief Q&A in
+class. Your presentation should summarize:
+● The general problem you're trying to solve and any necessary background information to
+solve that problem
+● A description of your project, including a walkthrough of relevant methods, data, features
+and/or design considerations, as well as how they support your target problem
+● A discussion of what you found out about your target problem through your project
+You will give the presentation to the class, so assume an audience of peers well-versed in basic
+visualization principles as you assemble your presentation. You may use whatever medium you would
+like, including slides, videos, demos, etc.
+Project Post-Mortem: Team projects are a chance to work together to learn from each other and
+create something fantastic. However, they can also lead to frustrations and imbalanced loads. This
+project post-mortem is a chance to tell the Instructor about the team dynamics that played out over the
+course of your project work. To that end, please submit the following as a text entry in Canvas:
+1. What you worked on in the project
+2. What your teammates worked on in the project
+3. Did you run into any significant challenges coordinating with your team? If so, what steps did
+you take to resolve them?
+4. How you would rate your performance and why
+5. How you would rate each teammates' performance and why
+These documents will be kept confidential but they will factor into project grades. If you feel all of the
+team worked hard and performed well, please don't hesitate to tell the instructor that (no curving is
+necessary on performance reviews :-))! Also, please keep in mind that different team members have
+different skillsets, roles, and experiences.
+Note that even solo projects will require a post-mortem. However, post-mortems for solo projects will
+only need to answer Questions 3 & 4 as they will help the instructor understand what challenges may
+not be evident from the write-up (you may note responses to the remaining fields as “N/A”). You will
+submit your post-mortem as a text document in Canvas.
+
+Rubric for Course Project: 95 points
+Expectations for the write-up and artifacts will be set for each project as part of the proposal feedback.
+The project consists of the following components:
+● Proposal: 5 points
+o Proposals meeting the requirements above in a clear and professional way will be given
+full credit.
+● Checkpoint #1: 5 points
+o Presentation is professional, clearly articulated, and 2-3 minutes in length
+● Checkpoint #2: 5 points
+o Presentation is professional, clearly articulated, and 2-3 minutes in length
+● Post-Mortem: 5 points
+o 1 point per question
+● Artifact(s): 35 points
+o Rubric determined based on the proposal
+● Write-Up: 30 points
+o Rubric determined based on the proposal
+● Presentation: 10 points
+o 2pts for correct length & Q&A handling
+o 2pts for professional delivery and clarity
+o 2pts for the motivation
+o 2pts for the project description
+o 2pts for discussion/reflection

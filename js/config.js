@@ -1,18 +1,8 @@
-/**
- * CONFIG.JS - All the constants and settings in one place
- *
- * This file has all the configuration stuff - colors, crime categories,
- * file paths, etc. Makes it easy to change things without digging through code.
- */
-
-// Where our data lives (local CSV files so we don't depend on the API)
 export const DATA_SOURCES = {
     incidents: 'data/incidents.csv',
     zipCodes: 'data/zipcodes.csv'
 };
 
-// Crime categories - we group NIBRS offense codes into 8 main types
-// This makes it easier to visualize and filter crimes
 export const CRIME_CATEGORIES = {
     violent: [
         'Murder', 'Aggravated Assault', 'Simple Assault', 'Intimidation',
@@ -57,7 +47,6 @@ export const CRIME_CATEGORIES = {
     ]
 };
 
-// Friendly names for each category (shows up in the UI)
 export const CATEGORY_LABELS = {
     violent: 'Violent Crimes',
     sex: 'Sex Crimes',
@@ -69,25 +58,22 @@ export const CATEGORY_LABELS = {
     other: 'Special / Other Incidents'
 };
 
-// Order to display categories (most serious first)
 export const CATEGORY_ORDER = [
     'violent', 'sex', 'property', 'fraud',
     'drug', 'publicOrder', 'weapons', 'other'
 ];
 
-// Colors for each category - using Charlotte's official brand colors
 export const CATEGORY_COLORS = {
-    violent: '#DE0505',      // Red for violent crimes
-    sex: '#59489F',          // Purple
-    property: '#EA9B3E',     // Orange
-    fraud: '#FADD4A',        // Yellow
-    drug: '#02508E',         // Blue
-    publicOrder: '#007953',  // Green
-    weapons: '#C70000',      // Dark red
-    other: '#2F70B8'         // Light blue
+    violent: '#DE0505',
+    sex: '#59489F',
+    property: '#EA9B3E',
+    fraud: '#FADD4A',
+    drug: '#02508E',
+    publicOrder: '#007953',
+    weapons: '#C70000',
+    other: '#2F70B8'
 };
 
-// HTML element IDs - keeps us from making typos
 export const ELEMENT_IDS = {
     loading: 'loadingOverlay',
     tooltip: 'tooltip',
@@ -103,16 +89,14 @@ export const ELEMENT_IDS = {
     incidentCount: 'incidentCount'
 };
 
-// Map settings for Charlotte
 export const MAP_CONFIG = {
-    centerLat: 35.2271,      // Charlotte's latitude
-    centerLon: -80.8431,     // Charlotte's longitude
+    centerLat: 35.2271,
+    centerLon: -80.8431,
     defaultZoom: 11,
     minZoom: 10,
     maxZoom: 18
 };
 
-// Chart sizing and spacing
 export const CHART_CONFIG = {
     margin: { top: 20, right: 100, bottom: 150, left: 80 },
     height: 750,

@@ -1,10 +1,3 @@
-/**
- * MAIN.JS - Starts up the whole app
- *
- * This is the entry point - loads data, sets up the map and charts,
- * wires up the filter controls, and gets everything running.
- */
-
 import { state, showLoading, hideLoading } from './state.js';
 import { DATA_SOURCES } from './config.js';
 import { loadAllData } from './dataLoad.js';
@@ -15,72 +8,33 @@ import { updateZipHotspotsChart } from './barChart.js';
 import { wireControls, populateDropdowns, renderCrimeTypeGuide, updateIncidentCount } from './ui.js';
 import { initializeTabs } from './tabs.js';
 import { renderCrimeTreemap } from './treemap.js';
+import { initializetemporal } from './temporal.js';
 
-// Main initialization function - this runs when the page loads
 export async function init() {
     try {
-        console.log('🚀 Starting Crime Lens of Charlotte...');
         showLoading();
 
-        // Load the CSV data files
-        console.log('📊 Loading data...');
         const rawData = await loadAllData();
-        console.log('✓ Loaded', rawData.incidents?.features?.length || 0, 'incidents and',
-                    rawData.zipCodes?.features?.length || 0, 'ZIP codes');
-
-        // Clean up and process the data
-        console.log('⚙️  Processing data...');
         processAllData(rawData);
-        console.log('✓ Processed', state.data.incidents.length, 'incidents');
-
-        // Apply filters (starts with everything selected)
-        console.log('🔍 Applying filters...');
         applyFilters();
-        console.log('✓ Showing', state.filtered.length, 'incidents');
-
-        // Set up the map
-        console.log('🗺️  Setting up map...');
         initializeMap();
-
-        // Fill in the dropdowns with options
-        console.log('🎛️  Populating dropdowns...');
         populateDropdowns();
-
-        // Draw everything
-        console.log('📈 Drawing visualizations...');
         updateMap();
         updateMapLegend();
         updateZipHotspotsChart();
         updateIncidentCount();
-
-        // Wire up the filter controls
-        console.log('🔌 Hooking up controls...');
         wireControls();
-
-        // Show the crime category guide
-        console.log('📚 Rendering crime guide...');
         renderCrimeTypeGuide();
-
-        // Initialize tab navigation
-        console.log('🗂️  Setting up tabs...');
         initializeTabs();
-
-        // Render metrics visualizations
-        console.log('📊 Rendering metrics...');
         renderCrimeTreemap();
+        initializetemporal();
 
-        // Done!
         hideLoading();
-        console.log('✅ App ready!');
-
-        // Show some stats
         logSummaryStatistics();
 
     } catch (error) {
-        console.error('❌ Startup failed:', error);
+        console.error('Startup failed:', error);
         hideLoading();
-
-        // Show error to user
         displayErrorMessage(
             'Failed to load application',
             'Try refreshing the page. Check the console for more info.'
@@ -88,7 +42,6 @@ export async function init() {
     }
 }
 
-// Show an error message to the user
 function displayErrorMessage(title, message) {
     const errorContainer = document.createElement('div');
     errorContainer.style.cssText = `
@@ -122,39 +75,18 @@ function displayErrorMessage(title, message) {
     document.body.appendChild(errorContainer);
 }
 
-// ============================================================================
-// STATISTICS & DEBUGGING
-// ============================================================================
-
-/**
- * Log summary statistics to console
- * Provides overview of loaded data for debugging
- *
- * Statistics:
- * - Total incidents
- * - Date range
- * - Category breakdown
- * - ZIP code coverage
- * - Spatial join success rate
- *
- * @private
- */
 function logSummaryStatistics() {
     const incidents = state.data.incidents;
-
-    // Category counts
     const categoryCounts = {};
     incidents.forEach(incident => {
         const cat = incident.category || 'other';
         categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
     });
 
-    // ZIP code assignment success rate
     const incidentsWithZip = incidents.filter(i => i.zipCode).length;
     const zipSuccessRate = ((incidentsWithZip / incidents.length) * 100).toFixed(1);
 
-    console.log('\n📊 Summary Statistics:');
-    console.log('─────────────────────────────────────────');
+    console.log('\nSummary Statistics:');
     console.log(`Total Incidents: ${incidents.length.toLocaleString()}`);
     console.log(`Date Range: ${state.filters.startDate?.toISOString().split('T')[0]} to ${state.filters.endDate?.toISOString().split('T')[0]}`);
     console.log(`ZIP Codes: ${state.data.zipCodes.length}`);
@@ -166,20 +98,10 @@ function logSummaryStatistics() {
             const percentage = ((count / incidents.length) * 100).toFixed(1);
             console.log(`  ${category}: ${count.toLocaleString()} (${percentage}%)`);
         });
-    console.log('─────────────────────────────────────────\n');
 }
 
-// ============================================================================
-// BOOTSTRAP
-// ============================================================================
-
-/**
- * Bootstrap application when DOM is ready
- * Attaches init function to DOMContentLoaded event
- */
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
 } else {
-    // DOM already loaded (e.g., script loaded late)
     init();
 }

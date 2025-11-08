@@ -1,10 +1,3 @@
-/**
- * TABS.JS - Handle tab switching between Crime Map and Metrics
- *
- * Simple tab navigation - switches between the map view and metrics view
- */
-
-// Set up tab switching
 export function initializeTabs() {
     const tabButtons = document.querySelectorAll('.tab-btn');
 
@@ -21,6 +14,8 @@ export function initializeTabs() {
 
             if (tabName === 'crimeMap') {
                 document.getElementById('crimeMapTab').classList.add('active');
+            } else if (tabName === 'temporal') {
+                document.getElementById('temporalTab').classList.add('active');
             } else if (tabName === 'metrics') {
                 document.getElementById('metricsTab').classList.add('active');
             }
