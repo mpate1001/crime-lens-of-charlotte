@@ -38,15 +38,15 @@
 </header>
 <main class="dashboard-main">
     <div class="container">
-        <!-- TAB NAVIGATION -->
+        <!-- Tab Nav -->
         <div class="tabs-nav">
             <button class="tab-btn active" data-tab="crimeMap">Crime Map</button>
+            <button class="tab-btn" data-tab="temporal">Temporal Crime</button>
             <button class="tab-btn" data-tab="metrics">Metrics</button>
         </div>
-
-        <!-- TAB CONTENT: CRIME MAP -->
+        <!-- Crime Map -->
         <div id="crimeMapTab" class="tab-content active">
-            <!-- FILTER PANEL -->
+            <!-- Filter -->
             <section class="control-panel">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                 <h2 class="section-title" style="margin: 0;">Filters & Controls</h2>
@@ -97,10 +97,8 @@
                 <div class="map-container">
                     <!-- Crime Type Legend (Left Side) -->
                     <div class="crime-type-legend" id="crimeTypeGrid"></div>
-
                     <!-- Map -->
                     <div id="mapVisualization"></div>
-
                     <!-- Modal for Crime Details -->
                     <div id="crimeModal" class="crime-modal">
                         <div class="crime-modal-content">
@@ -114,8 +112,14 @@
             </section>
         </div>
         </div>
-        <!-- END CRIME MAP TAB -->
-        <!-- METRICS TAB -->
+        <!-- TEMPORAL CRIME TAB -->
+        <div id="temporalTab" class="tab-content">
+           <section class="metric-section">
+                <div class="metric-viz-container" id="temporalContainer">
+                </div>
+            </section>
+        </div>
+        <!-- Metrics -->
         <div id="metricsTab" class="tab-content">
             <h2 class="metrics-header">Crime Metrics & Insights</h2>
             <p class="metrics-intro">Explore detailed crime statistics and answer key questions about crime patterns in Charlotte.</p>
