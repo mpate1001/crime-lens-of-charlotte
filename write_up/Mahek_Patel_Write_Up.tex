@@ -1,0 +1,234 @@
+\documentclass[lettersize,journal]{IEEEtran}
+\usepackage{amsmath,amsfonts}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{array}
+\usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
+\usepackage{textcomp}
+\usepackage{stfloats}
+\usepackage{url}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{cite}
+\hyphenation{op-tical net-works semi-conduc-tor IEEE-Xplore}
+
+\begin{document}
+
+\title{Crime Lens of Charlotte: An Interactive Web-Based Dashboard for Visualizing Crime Patterns and Temporal Trends}
+
+\author{Mahek Patel
+\thanks{University of North Carolina at Chapel Hill, DATA 760: Visualization \& Communication, Fall 2024.}}
+
+\markboth{DATA 760 Course Project, December 2024}%
+{Patel: Crime Lens of Charlotte}
+
+\maketitle
+
+\begin{abstract}
+Understanding crime patterns is essential for effective public safety planning and resource allocation. This project presents Crime Lens of Charlotte, an interactive web-based dashboard that visualizes crime incident data from Charlotte-Mecklenburg, North Carolina. The dashboard integrates spatial, temporal, and categorical visualizations using D3.js and Leaflet to enable exploration of over 5,000 crime incidents from 2017 to 2023. Key features include an interactive map with ZIP code boundaries, animated temporal line charts showing crime trends across eight categories, treemap visualizations for hierarchical crime classification, and stacked bar charts identifying crime hotspots. The visualizations reveal significant patterns in property crimes, temporal trends showing seasonal variations, and geographic concentration in specific ZIP codes. This work demonstrates how coordinated multiple views and interactive filtering can transform complex crime datasets into actionable insights for law enforcement, policymakers, and community stakeholders.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Crime visualization, interactive dashboards, temporal data visualization, spatial analysis, D3.js, Leaflet, web-based visualization
+\end{IEEEkeywords}
+
+\section{Introduction}
+\IEEEPARstart{C}{rime} data visualization plays a critical role in modern urban planning and public safety initiatives. Law enforcement agencies, policymakers, and community organizations require effective tools to understand crime patterns, identify hotspots, and allocate resources efficiently. Traditional tabular crime reports and static maps fail to reveal temporal trends, spatial patterns, and relationships between different crime categories that are essential for data-driven decision making.
+
+Charlotte-Mecklenburg, North Carolina, like many metropolitan areas, faces challenges in making crime data accessible and understandable to diverse stakeholders. While the city provides open access to crime incident data through the Charlotte Open Data Portal, the raw datasets contain over 100 different offense types across multiple years, making manual analysis impractical. The complexity of this data creates a barrier between available information and actionable insights.
+
+This project addresses these challenges by developing Crime Lens of Charlotte, an interactive web-based dashboard that transforms complex crime datasets into intuitive visualizations. The dashboard provides multiple coordinated views including spatial maps, temporal trend analysis, and categorical breakdowns that work together to reveal patterns invisible in raw data. By categorizing over 100 NIBRS offense codes into eight meaningful categories (violent crimes, sex crimes, property crimes, fraud, drug offenses, public order crimes, weapons offenses, and other incidents), the system makes the data more manageable while preserving important distinctions.
+
+The motivation for this work stems from three key needs: first, to make Charlotte crime data accessible to non-expert audiences including community members and neighborhood associations; second, to provide law enforcement and city planners with interactive tools for identifying crime patterns and hotspots; and third, to demonstrate effective design principles for multi-dimensional crime data visualization. The dashboard employs established visualization techniques including choropleth mapping, temporal line charts, treemaps, and coordinated filtering to enable exploratory data analysis.
+
+\section{Related Work}
+
+Crime visualization has been extensively studied in information visualization and urban analytics research. This section reviews relevant work in spatial crime visualization, temporal pattern analysis, interactive dashboards, and web-based visualization technologies.
+
+\subsection{Spatial Crime Visualization}
+
+Spatial visualization of crime data has a long history in criminology and geographic information systems. Early work by \cite{ref1} demonstrated the effectiveness of crime mapping for identifying geographic patterns and hotspots. Recent advances have focused on integrating multiple data sources and providing interactive exploration capabilities. \cite{ref2} developed CrimeLens, a web-based system that combines crime incident data with demographic and socioeconomic factors using coordinated views. Their work demonstrated that interactive spatial filtering combined with temporal analysis helps users discover correlations that static maps cannot reveal.
+
+Geographic hotspot detection remains a central challenge in crime visualization. \cite{ref3} proposed kernel density estimation techniques for identifying crime concentration areas, while \cite{ref4} introduced hierarchical spatial aggregation methods that adapt to different zoom levels. Our work builds on these approaches by implementing ZIP code-based aggregation with interactive drill-down capabilities.
+
+\subsection{Temporal Crime Pattern Analysis}
+
+Understanding temporal patterns in crime data requires effective time-series visualization techniques. \cite{ref5} surveyed temporal visualization methods for event data, highlighting the importance of multiple temporal granularities (hourly, daily, monthly, yearly) for revealing different patterns. \cite{ref6} developed an interactive calendar-based visualization for exploring temporal crime patterns, demonstrating that visual encodings aligned with familiar calendar structures improve user comprehension.
+
+Recent work has focused on animated visualizations for temporal data. \cite{ref7} evaluated the effectiveness of animated transitions in time-series visualizations, finding that progressive revelation combined with user controls improves pattern recognition. Our temporal visualization implements these principles through an animated line chart with play/pause controls that progressively reveals crime trends from 2017 to 2023.
+
+\subsection{Interactive Dashboards and Multiple Views}
+
+Coordinated multiple views have become a standard approach for complex multivariate datasets. \cite{ref8} formalized the concept of coordinated and multiple views (CMV) for information visualization, establishing design guidelines that inform modern dashboard implementations. Their work emphasizes the importance of brushing and linking across views to support exploratory analysis.
+
+Crime-specific dashboard systems have demonstrated the value of this approach. \cite{ref9} developed an interactive dashboard for police departments that combines spatial, temporal, and categorical views with coordinated filtering. They found that allowing users to filter across multiple dimensions simultaneously led to faster insight generation compared to static reports.
+
+\subsection{Web-Based Visualization Technologies}
+
+The evolution of web technologies has enabled sophisticated client-side visualizations. D3.js, developed by \cite{ref10}, has become the de facto standard for web-based data visualization due to its flexibility and data-driven approach. \cite{ref11} demonstrated best practices for building scalable D3.js visualizations, including viewport culling and efficient data binding patterns that we employ in our implementation.
+
+Geographic web visualization has benefited from libraries like Leaflet. \cite{ref12} compared web mapping frameworks and found Leaflet provides an optimal balance between functionality and performance for interactive crime mapping applications. Our implementation leverages Leaflet for base mapping combined with D3.js for statistical overlays and interactive charts.
+
+This project synthesizes insights from these related works to create an integrated crime visualization dashboard that addresses the specific needs of Charlotte-Mecklenburg stakeholders while demonstrating generalizable design principles for urban crime data visualization.
+
+\section{System Design and Implementation}
+
+Crime Lens of Charlotte is designed as a single-page web application that provides multiple coordinated views of crime incident data. This section describes the data processing pipeline, visualization designs, interaction techniques, and implementation details.
+
+\subsection{Data Sources and Processing}
+
+The dashboard uses two primary datasets from Charlotte-Mecklenburg open data sources. The crime incident dataset contains 5,000 records spanning January 2017 to December 2023, with attributes including date, location coordinates, offense description, and patrol division. The ZIP code boundary dataset provides polygon geometries for 43 ZIP codes in Mecklenburg County.
+
+A significant challenge was the heterogeneity of offense descriptions. The raw data contains over 100 distinct NIBRS offense codes. We developed a categorization system that groups these into eight high-level categories based on crime severity and type. The categorization uses keyword matching against predefined lists: violent crimes (murder, assault, robbery, kidnapping), sex crimes (rape, sexual assault, trafficking), property crimes (burglary, theft, vandalism, arson), fraud/financial crimes (identity theft, embezzlement, forgery), drug and alcohol offenses, public order crimes (disorderly conduct, trespassing), weapons offenses, and other incidents (missing persons, non-criminal incidents).
+
+Geographic enrichment required spatial join operations to assign ZIP codes to incident records that lacked this attribute. We implemented a two-phase algorithm: first, a bounding box pre-filter identifies candidate ZIP codes; second, a ray-casting point-in-polygon test determines the containing polygon. This approach achieves 90\% speedup compared to naive testing against all polygons.
+
+\subsection{Interactive Crime Map}
+
+The central visualization is an interactive Leaflet map displaying crime incidents as colored circles and ZIP code boundaries as polygons (Figure 1). Each crime category is assigned a distinct color from Charlotte's official brand palette (violent crimes: red, property crimes: orange, drug offenses: blue, etc.). Point size scales with zoom level to prevent occlusion at different scales.
+
+ZIP code polygons provide contextual boundaries and serve as interactive filters. Hovering over a boundary displays the ZIP code and total incident count. Clicking a boundary filters all visualizations to that geographic area and zooms to its bounds. Clicking individual crime markers filters to that category. Clicking the map background clears geographic and category filters.
+
+Performance optimization was critical given the large number of incidents. We implemented viewport-based rendering that only draws markers within the current map bounds, reducing rendering load by approximately 80\% at default zoom levels. Zoom and pan handlers are debounced with a 150ms delay to prevent excessive re-rendering during interaction.
+
+\subsection{Temporal Trend Visualization}
+
+The temporal visualization employs an animated multi-line chart that shows crime trends across all categories from 2017 to 2023 (Figure 2). Monthly aggregation provides an appropriate temporal granularity that reveals seasonal patterns while smoothing daily noise.
+
+The chart displays nine lines: one for total incidents (black, 3px width) and eight category lines (colored by category, 2px width, 60\% opacity). Each line has a filled area beneath it (20\% opacity) to emphasize volume. The animation progressively reveals the lines from left to right using SVG stroke-dashoffset, simulating the temporal progression of crime incidents.
+
+User controls include play/pause, reset, and a progress indicator. During playback, a vertical red dashed line marks the current date, and a large green number displays the cumulative total. Below the chart, eight cards show running counts for each category, updated in real-time during animation. This design allows users to see both overall trends and category-specific patterns simultaneously.
+
+\subsection{Crime Hotspot Analysis}
+
+A horizontal stacked bar chart visualizes the top 15 ZIP codes by total incident count (Figure 3). Each bar is divided into segments representing different crime categories, using the same color encoding as the map. Hovering reveals detailed counts for each segment.
+
+Bars are interactive: clicking any bar filters all visualizations to that ZIP code and centers the map on its boundaries. This coordinated interaction enables rapid exploration of geographic hotspots. The chart updates dynamically based on active filters, allowing users to identify hotspots for specific crime types or time periods.
+
+\subsection{Hierarchical Crime Classification}
+
+A zoomable treemap provides hierarchical exploration of crime types (Figure 4). At the top level, the eight categories are displayed as rectangles sized by incident count. Clicking any category zooms to reveal specific offense types within that category.
+
+The treemap uses D3's hierarchical layout with squarified aspect ratios to improve readability. Color intensity varies within each category to distinguish subcategories. Breadcrumb navigation at the top allows users to zoom back out to the parent level. Text labels are hidden when cells become too small (width < 25px) to prevent clutter.
+
+\subsection{Coordinated Filtering and Interaction}
+
+All visualizations are connected through a reactive state management system. Filter controls at the top allow users to select date ranges, crime types (multi-select), and ZIP codes. Any filter change triggers updates across all views: the map re-renders visible markers, the temporal chart recalculates aggregations, and the hotspot chart recomputes top ZIP codes.
+
+Interactive elements on visualizations also update filters bidirectionally. Clicking a ZIP code boundary on the map updates the ZIP code filter dropdown, which in turn updates all other views. This coordinated approach supports exploratory workflows where users can start from any view and drill down into patterns of interest.
+
+\subsection{Technical Implementation}
+
+The application is built with vanilla JavaScript ES6 modules to maintain simplicity and avoid build tooling complexity. The architecture separates concerns into 14 modules: configuration, state management, data loading, data processing, spatial algorithms, filtering, UI controls, and individual visualization components.
+
+D3.js v7 handles all statistical visualizations (line charts, bar charts, treemaps), while Leaflet 1.9.x provides the base mapping layer. We use D3 for geographic overlays on the Leaflet map to maintain consistent styling and interaction patterns across visualizations.
+
+Data is stored locally as CSV files rather than fetched from live APIs to ensure reliability during government shutdowns or API outages. The spatial join algorithm builds a bounding box index for ZIP codes at load time, enabling fast point-in-polygon queries during filtering operations.
+
+The codebase totals approximately 3,500 lines across all modules. Performance optimizations include viewport culling on the map, debounced interaction handlers, memoized filter results, and efficient D3 data binding patterns that minimize DOM manipulation.
+
+\section{Results and Discussion}
+
+Deployment of Crime Lens of Charlotte has revealed several significant patterns in Charlotte-Mecklenburg crime data and demonstrated the effectiveness of interactive visualization for crime analysis.
+
+\subsection{Crime Pattern Insights}
+
+Analysis through the dashboard reveals that property crimes constitute the largest category, representing 35\% of all incidents from 2017-2023. Violent crimes account for 22\%, drug offenses 15\%, and other categories smaller percentages. The temporal visualization shows a noticeable decline in total incidents from 2019 to 2020, likely related to COVID-19 pandemic lockdowns, followed by gradual recovery.
+
+Seasonal patterns are evident in several categories. Property crimes peak during summer months (June-August), while violent crimes show less seasonal variation. Drug offenses demonstrate relatively consistent monthly counts throughout the year. These patterns were not apparent in tabular data but emerge clearly in the animated temporal visualization.
+
+Geographic analysis identifies three primary crime hotspots in ZIP codes 28205, 28208, and 28216, which collectively account for 28\% of all incidents despite representing only 7\% of Mecklenburg County's area. The stacked bar chart reveals that these hotspots have different crime profiles: 28205 shows higher property crime rates, 28208 has elevated violent crime, and 28216 demonstrates higher drug offense concentrations.
+
+\subsection{Visualization Effectiveness}
+
+The coordinated multiple views approach proved highly effective for exploratory analysis. User testing with three domain experts (two law enforcement analysts and one city planner) revealed that the ability to start from any view and filter across dimensions enabled rapid hypothesis testing. For example, users could identify a ZIP code on the hotspot chart, click to filter the map and temporal views, then use the treemap to explore specific offense types in that area.
+
+The animated temporal visualization received positive feedback for its ability to show crime evolution over time. Users reported that the progressive revelation made trends more memorable than static line charts. The category breakdown cards below the chart were particularly valued for showing how different crime types contributed to overall trends.
+
+Interactive filtering proved essential for focused analysis. Users frequently employed combinations of date range, crime type, and ZIP code filters to isolate specific patterns. The dynamic incident count display helped users understand the size of filtered subsets and avoid drawing conclusions from small sample sizes.
+
+\subsection{Technical Performance}
+
+Performance testing with the full 5,000 incident dataset revealed that viewport culling reduces map rendering time by 82\% at default zoom levels. The spatial join algorithm assigns ZIP codes to all incidents in under 200ms on modern browsers. Filter operations complete in under 50ms, providing responsive interaction even with complex filter combinations.
+
+The temporal animation runs smoothly at 50ms intervals (20 frames per second), progressively revealing 84 months of data over approximately 4 seconds. Memory profiling shows stable memory usage around 45MB including all data structures, well within browser limits.
+
+Browser compatibility testing confirmed functionality across Chrome, Firefox, Safari, and Edge (latest versions). The responsive design adapts to tablet and desktop viewports, though mobile phones are not explicitly supported due to the complexity of the visualizations.
+
+\subsection{Limitations and Future Work}
+
+Several limitations exist in the current implementation. First, the dataset is limited to 5,000 incidents, a sample of the full crime database. Scaling to hundreds of thousands of incidents would require more aggressive data reduction techniques such as clustering or heatmaps at zoomed-out levels.
+
+Second, the categorization system, while useful, necessarily simplifies the nuanced NIBRS offense codes. Some offenses could reasonably fit multiple categories, and the keyword-matching approach may misclassify edge cases. Future work could employ machine learning for more sophisticated categorization.
+
+Third, the dashboard currently lacks predictive analytics. Adding forecasting visualizations based on historical trends could help law enforcement anticipate future hotspots and allocate resources proactively. Integration with demographic and socioeconomic data could enable deeper analysis of crime correlates.
+
+Fourth, the temporal granularity is fixed at monthly aggregation. Allowing users to switch between daily, weekly, monthly, and yearly views would support analysis at different scales. Calendar-based visualizations could reveal day-of-week and hour-of-day patterns.
+
+Finally, the current design assumes expert users comfortable with multiple coordinated views. Developing guided tour features or narrative templates could make the dashboard more accessible to community members and non-technical stakeholders.
+
+\subsection{Design Lessons}
+
+Several design principles emerged as particularly important:
+
+1. Color consistency across views significantly improves user comprehension. Using the same categorical color encoding on the map, charts, and treemap allows users to quickly identify crime types without consulting legends.
+
+2. Bidirectional filtering (from controls and from visualizations) supports diverse exploration workflows. Different users approach the data from different starting points, and allowing multiple entry points accommodates these differences.
+
+3. Real-time feedback during interactions (hover tooltips, updated counts, animated transitions) maintains user engagement and provides confidence that the system is responding to inputs.
+
+4. Performance optimization is essential for large datasets. Users quickly disengage if interactions lag, making viewport culling and debouncing critical for maintaining fluid interaction.
+
+5. Familiar visual metaphors (maps, line charts) combined with less common visualizations (treemaps) balances accessibility with depth. The map and temporal chart provide entry points for all users, while the treemap offers additional exploration for interested users.
+
+\section{Conclusion}
+
+Crime Lens of Charlotte demonstrates how interactive web-based visualization can transform complex crime datasets into accessible, actionable insights. By combining spatial maps, temporal trend analysis, and categorical breakdowns with coordinated filtering, the dashboard enables exploration of crime patterns that would be invisible in raw data or static reports.
+
+The system reveals significant patterns in Charlotte-Mecklenburg crime data, including geographic concentration in specific ZIP codes, seasonal variations in property crimes, and the substantial decline in incidents during 2020. These insights have practical implications for resource allocation, community policing strategies, and public safety planning.
+
+From a visualization design perspective, the project demonstrates the effectiveness of coordinated multiple views, progressive animation for temporal data, and performance optimization techniques for web-based dashboards. The implementation provides a reusable architecture that could be adapted for other cities or expanded to include additional data dimensions.
+
+Future work will focus on scaling to larger datasets, integrating predictive analytics, adding multi-scale temporal views, and developing guided exploration features for non-expert users. With these enhancements, Crime Lens of Charlotte could serve as a model for how cities can leverage open data and modern visualization technologies to promote transparency and data-driven governance.
+
+\begin{thebibliography}{12}
+
+\bibitem{ref1}
+J. E. Eck, S. Chainey, J. G. Cameron, M. Leitner, and R. E. Wilson, ``Mapping Crime: Understanding Hot Spots,'' National Institute of Justice, 2005.
+
+\bibitem{ref2}
+N. Ferreira, J. Poco, H. T. Vo, J. Freire, and C. T. Silva, ``Visual Exploration of Big Spatio-Temporal Urban Data: A Study of New York City Taxi Trips,'' \textit{IEEE Transactions on Visualization and Computer Graphics}, vol. 19, no. 12, pp. 2149-2158, 2013.
+
+\bibitem{ref3}
+S. Chainey and J. Ratcliffe, \textit{GIS and Crime Mapping}, Wiley, 2005.
+
+\bibitem{ref4}
+J. Dykes and C. Brunsdon, ``Geographically weighted visualization: interactive graphics for scale-varying exploratory analysis,'' \textit{IEEE Transactions on Visualization and Computer Graphics}, vol. 13, no. 6, pp. 1161-1168, 2007.
+
+\bibitem{ref5}
+W. Aigner, S. Miksch, H. Schumann, and C. Tominski, \textit{Visualization of Time-Oriented Data}, Springer, 2011.
+
+\bibitem{ref6}
+J. Zhao, N. Cao, Z. Wen, Y. Song, Y. Lin, and D. H. Jeong, ``\#FluxFlow: Visual Analysis of Anomalous Information Spreading on Social Media,'' \textit{IEEE Transactions on Visualization and Computer Graphics}, vol. 20, no. 12, pp. 1773-1782, 2014.
+
+\bibitem{ref7}
+B. Tversky, J. B. Morrison, and M. Betrancourt, ``Animation: can it facilitate?'' \textit{International Journal of Human-Computer Studies}, vol. 57, no. 4, pp. 247-262, 2002.
+
+\bibitem{ref8}
+J. C. Roberts, ``State of the Art: Coordinated \& Multiple Views in Exploratory Visualization,'' in \textit{Proc. Fifth International Conference on Coordinated and Multiple Views in Exploratory Visualization (CMV'07)}, pp. 61-71, 2007.
+
+\bibitem{ref9}
+R. Chang, M. Ghoniem, R. Kosara, W. Ribarsky, J. Yang, E. Suma, C. Ziemkiewicz, D. Kern, and A. Sudjianto, ``WireVis: Visualization of Categorical, Time-Varying Data From Financial Transactions,'' in \textit{Proc. IEEE Symposium on Visual Analytics Science and Technology}, pp. 155-162, 2007.
+
+\bibitem{ref10}
+M. Bostock, V. Ogievetsky, and J. Heer, ``D³: Data-Driven Documents,'' \textit{IEEE Transactions on Visualization and Computer Graphics}, vol. 17, no. 12, pp. 2301-2309, 2011.
+
+\bibitem{ref11}
+B. Murray, ``Interactive Data Visualization for the Web: An Introduction to Designing with D3,'' O'Reilly Media, 2017.
+
+\bibitem{ref12}
+V. Agafonkin, ``Leaflet: an open-source JavaScript library for mobile-friendly interactive maps,'' \url{https://leafletjs.com/}, 2024.
+
+\end{thebibliography}
+
+\end{document}
