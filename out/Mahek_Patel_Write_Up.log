@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.3.8)  8 NOV 2025 08:55
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2025.3.8)  9 NOV 2025 07:57
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -511,6 +511,11 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 Package hyperref Info: Link coloring OFF on input line 16.
+
+(/Users/mahekpatel/Library/CloudStorage/Dropbox-Samp/Mahek Patel/Mac/UNC/Data 7
+60/Course Project/crime-lens-of-charlotte/out/Mahek_Patel_Write_Up.out)
+(/Users/mahekpatel/Library/CloudStorage/Dropbox-Samp/Mahek Patel/Mac/UNC/Data 7
+60/Course Project/crime-lens-of-charlotte/out/Mahek_Patel_Write_Up.out)
 \@outlinefile=\write3
 \openout3 = `Mahek_Patel_Write_Up.out'.
 
@@ -527,90 +532,93 @@ ocal/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc}
 
 
 [2]
-<figures/crime_map.png, id=49, 1711.39375pt x 1038.88126pt>
+<figures/crime_map.png, id=129, 1711.39375pt x 1038.88126pt>
 File: figures/crime_map.png Graphic file (type png)
 <use figures/crime_map.png>
-Package pdftex.def Info: figures/crime_map.png  used on input line 99.
+Package pdftex.def Info: figures/crime_map.png  used on input line 97.
 (pdftex.def)             Requested size: 252.94499pt x 153.54277pt.
 
-Overfull \hbox (0.94499pt too wide) in paragraph at lines 99--100
+Overfull \hbox (0.94499pt too wide) in paragraph at lines 97--98
  [][] 
  []
 
-
-
-<figures/temporal_chart.png, id=51, 1359.0775pt x 853.1875pt>
+<figures/temporal_chart.png, id=131, 1359.0775pt x 853.1875pt>
 File: figures/temporal_chart.png Graphic file (type png)
 <use figures/temporal_chart.png>
-Package pdftex.def Info: figures/temporal_chart.png  used on input line 114.
+Package pdftex.def Info: figures/temporal_chart.png  used on input line 112.
 (pdftex.def)             Requested size: 252.94499pt x 158.78757pt.
 
-Overfull \hbox (0.94499pt too wide) in paragraph at lines 114--115
+Overfull \hbox (0.94499pt too wide) in paragraph at lines 112--113
  [][] 
  []
 
-<figures/hotspots_chart.png, id=52, 1671.24374pt x 1175.39125pt>
+<figures/hotspots_chart.png, id=132, 1671.24374pt x 1175.39125pt>
 File: figures/hotspots_chart.png Graphic file (type png)
 <use figures/hotspots_chart.png>
-Package pdftex.def Info: figures/hotspots_chart.png  used on input line 127.
+Package pdftex.def Info: figures/hotspots_chart.png  used on input line 125.
 (pdftex.def)             Requested size: 252.94499pt x 177.8973pt.
 
-Overfull \hbox (0.94499pt too wide) in paragraph at lines 127--128
+Overfull \hbox (0.94499pt too wide) in paragraph at lines 125--126
  [][] 
  []
 
 
 
-[3 <./figures/crime_map.png> <./figures/temporal_chart.png>]
-<figures/treemap.png, id=65, 887.315pt x 763.85374pt>
+<figures/treemap.png, id=133, 887.315pt x 763.85374pt>
 File: figures/treemap.png Graphic file (type png)
 <use figures/treemap.png>
-Package pdftex.def Info: figures/treemap.png  used on input line 140.
+Package pdftex.def Info: figures/treemap.png  used on input line 138.
 (pdftex.def)             Requested size: 252.94499pt x 217.7472pt.
 
-Overfull \hbox (0.94499pt too wide) in paragraph at lines 140--141
+Overfull \hbox (0.94499pt too wide) in paragraph at lines 138--139
  [][] 
  []
 
 
 
-
-Underfull \hbox (badness 2012) in paragraph at lines 159--160
-[]\OT1/ptm/m/n/10 The en-tire code-base is or-ga-nized with 14 in-di-vid-ual
+[3 <./figures/crime_map.png> <./figures/temporal_chart.png> <./figures/hotspots
+_chart.png>]
+Underfull \hbox (badness 6380) in paragraph at lines 157--158
+[]\OT1/ptm/m/n/10 Performance op-ti-miza-tion strate-gies in-clude view-port
  []
 
 
 
-[4 <./figures/hotspots_chart.png> <./figures/treemap.png>]
+
+
+[4 <./figures/treemap.png>]
+
+
+Underfull \hbox (badness 6944) in paragraph at lines 214--215
+[]\OT1/ptm/m/n/10 The dash-board re-veals clear pat-terns in Charlotte-
+ []
 
 
 
 [5]
-Underfull \hbox (badness 2818) in paragraph at lines 216--217
-[]\OT1/ptm/m/n/10 This web-site brings out clear pat-terns in Charlotte-
- []
-
-
-
 LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 2
-52.
-(/usr/local/texlive/2025/texmf-dist/tex/latex/psnfss/ts1ptm.fd
+50.
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 258
+LaTeX Font Info:    Trying to load font information for U+msa on input line 256
 .
 
 (/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 258
+LaTeX Font Info:    Trying to load font information for U+msb on input line 256
 .
 
 (/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 
-[6]
+
+
+[6
+
+]
 (/Users/mahekpatel/Library/CloudStorage/Dropbox-Samp/Mahek Patel/Mac/UNC/Data 7
 60/Course Project/crime-lens-of-charlotte/out/Mahek_Patel_Write_Up.aux)
  ***********
@@ -621,33 +629,27 @@ L3 programming layer <2025-01-18>
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
-
-Package rerunfilecheck Warning: File `Mahek_Patel_Write_Up.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `Mahek_Patel_Write_Up.out':
-(rerunfilecheck)             Before: <no file>
-(rerunfilecheck)             After:  18601B849EE1C865EFF17D0132BB86C4;3984.
+Package rerunfilecheck Info: File `Mahek_Patel_Write_Up.out' has not changed.
+(rerunfilecheck)             Checksum: 18601B849EE1C865EFF17D0132BB86C4;3984.
  ) 
 Here is how much of TeX's memory you used:
- 11727 strings out of 473190
- 190795 string characters out of 5715801
- 606296 words of memory out of 5000000
- 34781 multiletter control sequences out of 15000+600000
+ 11755 strings out of 473190
+ 191749 string characters out of 5715801
+ 607464 words of memory out of 5000000
+ 34805 multiletter control sequences out of 15000+600000
  596622 words of font info for 105 fonts, out of 8000000 for 9000
  1145 hyphenation exceptions out of 8191
- 75i,6n,79p,1704b,442s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,6n,79p,1411b,576s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/lo
 cal/texlive/2025/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texli
 ve/2025/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2025/te
 xmf-dist/fonts/type1/urw/times/utmri8a.pfb>
 Output written on "/Users/mahekpatel/Library/CloudStorage/Dropbox-Samp/Mahek Pa
 tel/Mac/UNC/Data 760/Course Project/crime-lens-of-charlotte/out/Mahek_Patel_Wri
-te_Up.pdf" (6 pages, 2370357 bytes).
+te_Up.pdf" (6 pages, 2368496 bytes).
 PDF statistics:
- 124 PDF objects out of 1000 (max. 8388607)
- 99 compressed objects within 1 object stream
+ 192 PDF objects out of 1000 (max. 8388607)
+ 166 compressed objects within 2 object streams
  45 named destinations out of 1000 (max. 500000)
- 21 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 197 words of extra memory for PDF output out of 10000 (max. 10000000)
 
