@@ -28,6 +28,7 @@ jobs:
       # Step 4: Run the data fetch script
       - name: Fetch latest crime data
         run: |
+          cd Export_Data
           python fetch_data.py
 
       # Step 5: Check if there are any changes
