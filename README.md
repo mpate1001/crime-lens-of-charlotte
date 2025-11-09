@@ -86,8 +86,6 @@ Guide for making API calls using Fetch API
 
 ## Data Sources
 
-**Important Note**: This application now uses **local CSV data files** stored in the `data/` directory instead of live API calls. This ensures the application remains functional during government shutdowns or API outages.
-
 ### Current Data Files
 
 1. **data/incidents.csv** - CMPD crime incidents (5,000 records)
@@ -97,6 +95,26 @@ Guide for making API calls using Fetch API
 2. **data/zipcodes.csv** - ZIP code boundaries (43 ZIP codes)
    - Contains ZIP codes and polygon geometries for Mecklenburg County
    - Originally from: Mecklenburg County GIS Services
+
+### Updating Data
+
+To fetch the latest crime data from Charlotte Open Data Portal:
+
+**Option 1: GitHub Actions (Recommended)**
+1. Go to the **Actions** tab in GitHub
+2. Select **"Update Crime Data"** workflow
+3. Click **"Run workflow"**
+4. Wait 1-2 minutes for completion
+5. New data will be automatically committed
+
+**Option 2: Run Locally**
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the data fetcher
+python fetch_data.py
+```
 
 ## Technologies Used
 - **D3.js** - Data visualizations and charts
