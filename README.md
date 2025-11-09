@@ -113,6 +113,7 @@ To fetch the latest crime data from Charlotte Open Data Portal:
 pip install -r requirements.txt
 
 # Run the data fetcher
+cd Export_Data
 python fetch_data.py
 ```
 
